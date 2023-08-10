@@ -22,7 +22,7 @@ memoria = memoria.Memoria(tamanho, tamanho_p)
 
 menu = input("Aperte enter para iniciar! ")
 
-pai_de_todos = Diretorio("C", None) 
+pai_de_todos = Diretorio("C:", None) 
 diretorio_atual = pai_de_todos
 
 while True:
@@ -32,7 +32,7 @@ while True:
     
     if menu == 1:
         utilitarios.titulo_modelo(f'Você esta em "{control.lista_diretorio(diretorio_atual)}":')
-        control.lista_itens(diretorio_atual)
+        control.lista_itens(diretorio_atual, memoria)
     
     elif menu == 2: # ENTRAR
         utilitarios.titulo_modelo(f'Você esta em "{control.lista_diretorio(diretorio_atual)}":')
@@ -65,13 +65,34 @@ while True:
         utilitarios.titulo_modelo("Você esta na parte de craição de arquivos")
         nome = input("Diga o nome do arquivo: ")
         tamanho = utilitarios.verifica_int("Diga o tamanho do arquivo: ")
-        novo_arquivo = Arquivo(nome, tamanho, diretorio_atual)
-        diretorio_atual.adiciona_arquivo(novo_arquivo)
+        
+        aux = "/" + nome
+        verificador = 0
+        for c in diretorio_atual.arquivos:
+            if aux == c.nome:
+                verificador = 1
+                break
+            
+            
+        if verificador == 1:
+            print("\033[0;31mJá existe uma pasta com esse nome nesse diretorio!\033[m")
+            input("Aperte enter para continuar!")
+        
+        else:
+            novo_arquivo = Arquivo(nome, tamanho, diretorio_atual)
+            verificador = memoria.adicionar_memoria(novo_arquivo)
+            if verificador != False:
+                diretorio_atual.adiciona_arquivo(novo_arquivo)
+            else:
+                utilitarios.titulo_modelo("\033[0;31mNão possui espaço suficiente na memoria\033[m")
+                input("Aperte enter para continuar!")
+            
+        
     
     elif menu == 5:
         utilitarios.titulo_modelo("Voce esta na tela de adição de diretorios!")
         nome = input("Qual o nome do seu diretorio: ")
-        control.adicionar_diretorio(diretorio_atual, nome)
+        control.adicionar_diretorio(diretorio_atual, nome, memoria)
         print("Diretorio adicionado com sucesso!")
     
     elif menu == 6:
@@ -87,7 +108,7 @@ while True:
             else:
                 break
         
-        diretorio_atual.remover_arquivo(item)
+        diretorio_atual.remover_arquivo(item, memoria)
     
     else:
         break

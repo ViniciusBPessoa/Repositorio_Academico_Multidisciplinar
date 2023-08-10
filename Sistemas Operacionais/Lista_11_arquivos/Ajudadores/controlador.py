@@ -13,15 +13,16 @@ def lista_diretorio(diretorio_atual):
     
     return streng
 
-def lista_itens(diretorio):
+def lista_itens(diretorio, memoria):
     
     diretorio.listar_itens()
+    memoria.printar()
     input("aperte enter para continuar!")
     
 def adicionar_arquivo():
     pass
 
-def adicionar_diretorio(atual, novo):
+def adicionar_diretorio(atual, novo, memoria):
     
     verificador = 0
     aux = "/" + novo
@@ -35,10 +36,5 @@ def adicionar_diretorio(atual, novo):
         print("\033[0;31mJá existe uma pasta com esse nome nesse diretorio!\033[m")
         input("Aperte enter para continuar!")
     else:
-        atual.adicionar_diretorio(novo)
-
-def remover_diretorio():
-    pass
-
-def remover_arquivo():
-    pass
+        
+        atual.adicionar_diretorio(novo, memoria)

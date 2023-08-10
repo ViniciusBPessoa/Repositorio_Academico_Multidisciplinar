@@ -32,7 +32,7 @@ class Diretorio:
                 
                 nome_classe = x.__class__.__name__
                 
-                self.table.add_rows([[posi, x.nome[1:], nome_classe, x.tamanho]])
+                self.table.add_rows([[posi, x.nome, nome_classe, x.tamanho]])
                 posi += 1
             
         print(self.table)
@@ -79,9 +79,14 @@ class Diretorio:
         self.table.clear_rows()
         return verificador
         
-    def adicionar_diretorio(self, nome):
-        
-        self.arquivos.append(Diretorio(nome, self))
+    def adicionar_diretorio(self, nome, memoria):
+        diretorio = Diretorio(nome, self)
+        result = memoria.adicionar_memoria(diretorio)
+        if result != False:
+            self.arquivos.append(diretorio)
+        else:
+            utilitarios.titulo_modelo("\033[0;31mNão possui espaço suficiente na memoria\033[m")
+            input("Aperte enter para continuar!")
         
     def retorna_diretorio(self, posição):
         posi = 1
@@ -106,8 +111,10 @@ class Diretorio:
             aux.tamanho = aux.caucula_tamanho()
             aux = aux.pai
             
-    def remover_arquivo(self, item):
+    def remover_arquivo(self, item, memoria):
         item -= 1
+        aux = self.arquivos[item]
+        memoria.remover_memoria(aux)
         self.arquivos.pop(item)
         self.atualiza_tamanho_geral()
         
