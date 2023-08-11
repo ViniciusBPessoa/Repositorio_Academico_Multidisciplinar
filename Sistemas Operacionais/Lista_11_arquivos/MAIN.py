@@ -66,7 +66,7 @@ while True:
         nome = input("Diga o nome do arquivo: ")
         tamanho = utilitarios.verifica_int("Diga o tamanho do arquivo: ")
         
-        aux = "/" + nome
+        aux = nome
         verificador = 0
         for c in diretorio_atual.arquivos:
             if aux == c.nome:
@@ -98,6 +98,10 @@ while True:
     elif menu == 6:
         utilitarios.titulo_modelo(f'Você esta em "{control.lista_diretorio(diretorio_atual)}":')
         diretorio_atual.listar_itens()
+        
+        if len(diretorio_atual.arquivos) == 0:
+            input("Driretorio limpo aperte enter para voltar! ")
+            continue
         
         while True:
             item = utilitarios.verifica_int("Qual o ITEM que voce deseja deletar: ")

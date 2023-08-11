@@ -52,7 +52,7 @@ class Memoria:
         
         for c in self.memoria:
             if c != None:
-                localizador = self.memoria.index(c) + 1
+                localizador = len(self.memoria) - self.memoria[::-1].index(c)
                 verificador = False
                 aux_tam = item.tamanho
             elif aux_tam == 0:
@@ -121,23 +121,20 @@ class Memoria:
             self.memoria[posi] = None
     
     def desquebrar(self):
-        novo_memoria = []
-        i = 0
-
-        while i < len(self.memoria):
-            if self.memoria[i] is None:
-                tamanho_bloco_vazio = 0
-                while i < len(self.memoria) and self.memoria[i] is None:
-                    tamanho_bloco_vazio += 1
-                    i += 1
-
-                if i < len(self.memoria):
-                    novo_memoria.append(None)
-            else:
-                novo_memoria.append(self.memoria[i])
-                i += 1
-
-        self.memoria = novo_memoria
+        nova_memoria = []
+        
+        for x in self.memoria:
+            if x != None:
+                nova_memoria.append(x)
+        
+        aux = len(self.memoria)
+        
+        aux = aux - len(nova_memoria)
+        
+        for c in range(0, aux):
+            nova_memoria.append(None)
+            
+        self.memoria = nova_memoria[:]
     
     def printar(self):
 
@@ -164,3 +161,16 @@ class Memoria:
 
         print(self.table)
         self.table.clear_rows()
+        
+        var = False
+        jesus = False
+        
+        for c in self.memoria:
+            if c == None:
+                var = True
+            if c != None and var == True:
+                jesus = True
+                
+    
+        utilitarios.titulo_modelo(f"Essa memoria possui fragmentação externa? {jesus}")
+            
