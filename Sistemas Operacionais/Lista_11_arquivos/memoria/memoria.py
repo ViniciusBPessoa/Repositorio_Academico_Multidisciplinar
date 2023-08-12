@@ -13,35 +13,6 @@ class Memoria:
         
         for c in range(0, aux):
             self.memoria.append(None)
-            
-    
-    def adicionar_memoria(self, dado):
-        aux_tamanho = dado.tamanho
-        posicao = None
-        achado = False
-        
-        for c in self.memoria:
-            if c == None:
-                aux_tamanho -= self.tamanho_bloco
-                if posicao == None:
-                    posicao = self.memoria.index(c)
-                if aux_tamanho == 0:
-                    achado = True
-                    break
-                elif aux_tamanho < self.tamanho_bloco and aux_tamanho != 0:
-                    if self.memoria[self.memoria.index(c) + 1] == None:
-                        achado = True
-                        break
-                    else:
-                        aux_tamanho = dado.tamanho
-                        achado = False
-                        posicao = None
-                        continue
-                
-                else:
-                    aux_tamanho = dado.tamanho
-                    posicao = None
-                    continue
     
     def adicionar_memoria(self, item):
         
@@ -74,7 +45,7 @@ class Memoria:
             
             for c in self.memoria:
                 if c != None:
-                    localizador = self.memoria.index(c) + 1
+                    localizador = len(self.memoria) - self.memoria[::-1].index(c)
                     verificador = False
                     aux_tam = item.tamanho
                 elif aux_tam == 0:
