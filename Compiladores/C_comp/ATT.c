@@ -10,7 +10,7 @@
 //String que deve ser usada:
 
 //String de teste:
-char entrada[N]= "S(S(I(CB(SKB)K)K)K)\0";
+char entrada[N]= "KBKSKKK\0";
 static char saida[N];
 
 //Procedimento que recebe duas variáveis, uma que aponta para
@@ -212,7 +212,6 @@ void reduzB(char* array1, char* array2){
     acha_argumento(array1,&n);
     nX = n-1;
 
-    //S a b c => a c ( b c )
     int k = 0;
     int i;
 
