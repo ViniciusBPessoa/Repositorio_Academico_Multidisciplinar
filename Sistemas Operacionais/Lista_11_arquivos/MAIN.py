@@ -119,4 +119,4 @@ while True:
     
     
 system("cls")
-utilitarios.titulo_modelo("VLW e ate a proxima!")
+utilitarios.titulo_modelo("VLW e até a proxima!")
