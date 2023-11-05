@@ -1,24 +1,22 @@
-# Repositório Acadêmico Multidisciplinar
+# Repositório Acadêmico Multidisciplina
 
-Bem-vindo ao Repositório Acadêmico Multidisciplinar! Este é um espaço dedicado à colaboração e compartilhamento de conhecimentos em diversas disciplinas universitárias. Aqui, estudantes e professores podem encontrar recursos valiosos relacionados a diferentes áreas do conhecimento, estimulando o aprendizado colaborativo e o crescimento acadêmico.
+Bem-vindo ao Repositório Acadêmico Multidisciplinar! Este é um espaço exclusivo dedicado à exposição de conhecimentos em diversas disciplinas universitárias. Este repositório é apenas para leitura, com modificações permitidas somente pelo autor original para preservar a integridade dos trabalhos e materiais aqui disponibilizados.
 
 ## Objetivo do Repositório
 
-Nosso objetivo é criar uma plataforma dinâmica que reúna projetos, trabalhos acadêmicos e materiais didáticos de várias disciplinas universitárias. Desde Arquitetura de Computadores até Redes Neurais, passando por Sistemas Operacionais e muito mais, este repositório serve como um hub de aprendizado para estudantes ávidos por conhecimento.
+O objetivo deste repositório é fornecer uma biblioteca estática de recursos educacionais, permitindo que estudantes e entusiastas acessem trabalhos e projetos em áreas como Arquitetura de Computadores, Redes Neurais, Sistemas Operacionais e outras disciplinas universitárias.
 
-## Como Contribuir
-
-- **Adicione Seus Trabalhos**: Se você tem projetos ou trabalhos acadêmicos relevantes, sinta-se à vontade para adicionar ao repositório, ajudando outros estudantes a aprender e se inspirar.
-
-- **Colabore e Compartilhe**: Estimulamos colaborações e discussões construtivas entre membros da comunidade. Sinta-se à vontade para abrir issues, discutir ideias e colaborar em projetos existentes.
-
-- **Explorar Diferentes Disciplinas**: Este repositório não se limita a disciplinas específicas. Explore trabalhos em diversas áreas para expandir seu conhecimento e obter insights valiosos.
-
-## Estrutura do Repositório
+## Conteúdo Disponível
 
 - **`Arquitetura_de_Computadores/`**: Contém trabalhos e atividades relacionados à disciplina de Arquitetura de Computadores.
 - **`Redes Neurais/`**: Inclui documentos e projetos sobre Redes Neurais, destacando aplicações e desenvolvimentos recentes.
 - **`Sistemas Operacionais/`**: Documentos e códigos vinculados à disciplina de Sistemas Operacionais, incluindo trabalhos sobre compiladores.
-- **`Outras Disciplinas/`**: Um espaço dedicado a diversas outras disciplinas universitárias, onde estudantes podem compartilhar trabalhos e materiais relacionados.
+- **`Outras Disciplinas/`**: Um espaço dedicado a diversas outras disciplinas universitárias, onde você pode explorar materiais educacionais variados.
 
-Agradecemos por fazer parte deste repositório acadêmico multidisciplinar! Juntos, estamos construindo um ambiente de aprendizado colaborativo e enriquecedor para todos.
+## Instruções
+
+- **Leitura e Aprendizado**: Fique à vontade para explorar os trabalhos disponíveis em cada pasta. Utilize este repositório como uma fonte de aprendizado e inspiração para seus próprios estudos.
+
+- **Sem Modificações**: Por favor, note que este repositório é somente leitura. Modificações e contribuições não são permitidas por terceiros para manter a integridade dos materiais.
+
+Agradecemos por utilizar este repositório como uma ferramenta de aprendizado. Se você tiver alguma dúvida ou precisar de assistência, sinta-se à vontade para entrar em contato com o autor original do repositório.
