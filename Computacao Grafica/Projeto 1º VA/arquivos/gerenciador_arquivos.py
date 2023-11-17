@@ -5,9 +5,10 @@ import os
 class GerenciadorModelo: # responsavel por gerenciar o carregamento do modelo
     def __init__(self):
         self.diretorio_modelos = os.path.dirname(os.path.abspath(__file__)) + "/modelos/" # Para executar sempre (Carrega a devida localização)
+        self.nome_malha_atual = None # recebe o nome do arquivo da malha
         self.malha_atual = None # mantem a malha atravez de um dicionario
 
-    def carregar_malha(self, malha = "piramide"): # carrega a malha
+    def carregar_malha(self, malha = "piramide", busca = False): # carrega a malha
         arquivo_malha = self.diretorio_modelos + f"{malha}.byu" # localiza o arquivo
 
         try: # try (para n dar merda)
@@ -28,10 +29,12 @@ class GerenciadorModelo: # responsavel por gerenciar o carregamento do modelo
                     faces.append(indices)
 
                 self.malha_atual = {'vertices': vertices, 'faces': faces} # adicionando o dicionario a variavel correta
+                self.nome_malha_atual = malha
                 return self.malha_atual
 
         except FileNotFoundError:
             return -1 # caso o retorno seja -1 o modelo não foi carregado com sucesso
+    
 
     def exibir_malha(self): # so printa bonitinho
         if self.malha_atual != None:
@@ -43,7 +46,3 @@ class GerenciadorModelo: # responsavel por gerenciar o carregamento do modelo
             for indice, face in enumerate(self.malha_atual['faces'], start=1):
                 print(f"Face {indice}: {face}")
 
-# Exemplo de uso
-ca = GerenciadorModelo()
-ca.carregar_malha("piramide")
-ca.exibir_malha()
