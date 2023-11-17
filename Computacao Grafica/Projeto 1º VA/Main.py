@@ -1,5 +1,6 @@
 import pygame
 
+
 pygame.init()
 
 largura, altura = 800, 600
@@ -15,6 +16,11 @@ while executando:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             executando = False
+        
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_r:
+                print("Hallo, world")
+
 
     # Atualiza a tela
     pygame.display.update()
