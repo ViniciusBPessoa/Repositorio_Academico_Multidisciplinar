@@ -7,7 +7,7 @@ class GerenciadorModelo: # responsavel por gerenciar o carregamento do modelo
         self.diretorio_modelos = os.path.dirname(os.path.abspath(__file__)) + "/modelos/" # Para executar sempre (Carrega a devida localização)
         self.malha_atual = None # mantem a malha atravez de um dicionario
 
-    def carregar_malha(self, malha): # carrega a malha
+    def carregar_malha(self, malha = "piramide"): # carrega a malha
         arquivo_malha = self.diretorio_modelos + f"{malha}.byu" # localiza o arquivo
 
         try: # try (para n dar merda)
