@@ -2,7 +2,7 @@ import os
 
 # esse codigo temo objetivo de carregar minha malha na memoria formando as duas tabelas em formato de dicionario
 
-class GerenciadorModelo: # responsavel por gerenciar o carregamento do modelo
+class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
     def __init__(self):
         self.diretorio_modelos = os.path.dirname(os.path.abspath(__file__)) + "/modelos/" # Para executar sempre (Carrega a devida localização)
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
@@ -46,3 +46,42 @@ class GerenciadorModelo: # responsavel por gerenciar o carregamento do modelo
             for indice, face in enumerate(self.malha_atual['faces'], start=1):
                 print(f"Face {indice}: {face}")
 
+class Gerenciador_camera:
+    def __init__(self) -> None:
+        self.diretorio_cameras = os.path.dirname(os.path.abspath(__file__)) + "/cameras/" 
+        self.nome_camera_atual = None 
+        self.camera_atual = None 
+
+    def carregar_camera(self, camera):
+        arquivo_camera = self.diretorio_cameras + f"{camera}.txt"
+
+        try:
+            with open(arquivo_camera, 'r') as camera_carregada:
+                linhas = camera_carregada.readlines()
+                parametros_camera = {}
+
+                for linha in linhas:
+                    chave, valor = linha.strip().split(' = ')
+                    if chave.strip() == 'C':
+                        parametros_camera[chave.strip()] = list(map(float, valor.split()))
+                    else:
+                        parametros_camera[chave.strip()] = list(map(float, valor.split()))
+
+                self.camera_atual = parametros_camera
+                self.nome_camera_atual = camera
+                return self.camera_atual
+
+        except FileNotFoundError:
+            return -1  # Retorna -1 caso o arquivo não seja encontrado
+
+if __name__ == "__main__":
+    gerenciador_cameras = Gerenciador_camera()
+    nome_arquivo_camera = "camera01"  # Substitua pelo nome do arquivo da câmera desejado
+    parametros_camera = gerenciador_cameras.carregar_camera(nome_arquivo_camera)
+    
+    if parametros_camera != -1:
+        print("Parâmetros da câmera carregados com sucesso:")
+        for chave, valor in parametros_camera.items():
+            print(f"{chave} : {valor}")
+    else:
+        print("Erro ao carregar os parâmetros da câmera. Arquivo não encontrado.")

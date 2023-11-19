@@ -14,7 +14,7 @@ largura, altura = 1366, 720
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption('Modelador')
 
-gerenciador_modelo = gerenciador_arquivos.GerenciadorModelo()
+gerenciador_modelo = gerenciador_arquivos.Gerenciador_Modelo()
 gerenciador_modelo.carregar_malha("piramide")
 
 executando = True
