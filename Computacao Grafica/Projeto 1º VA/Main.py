@@ -43,6 +43,7 @@ while executando:
                         else:
                             print("Arquivo não encontrado")
                             continue
+                    else: break
                 
             if evento.key == pygame.K_SPACE:
                 gerenciador_modelo.exibir_malha()

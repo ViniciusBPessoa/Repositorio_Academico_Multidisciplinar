@@ -58,15 +58,13 @@ class Gerenciador_camera:
         try:
             with open(arquivo_camera, 'r') as camera_carregada:
                 linhas = camera_carregada.readlines()
+                possiveis_parametros = ['N', 'V', 'd', 'Hx', 'Hy', "C"]
                 parametros_camera = {}
 
-                for linha in linhas:
-                    chave, valor = linha.strip().split(' = ')
-                    if chave.strip() == 'C':
-                        parametros_camera[chave.strip()] = list(map(float, valor.split()))
-                    else:
-                        parametros_camera[chave.strip()] = list(map(float, valor.split()))
-
+                for linha, conterudo in enumerate(possiveis_parametros):
+                    parametros_camera[conterudo] = linhas[linha].split()
+                
+                print(parametros_camera)
                 self.camera_atual = parametros_camera
                 self.nome_camera_atual = camera
                 return self.camera_atual
@@ -78,10 +76,3 @@ if __name__ == "__main__":
     gerenciador_cameras = Gerenciador_camera()
     nome_arquivo_camera = "camera01"  # Substitua pelo nome do arquivo da câmera desejado
     parametros_camera = gerenciador_cameras.carregar_camera(nome_arquivo_camera)
-    
-    if parametros_camera != -1:
-        print("Parâmetros da câmera carregados com sucesso:")
-        for chave, valor in parametros_camera.items():
-            print(f"{chave} : {valor}")
-    else:
-        print("Erro ao carregar os parâmetros da câmera. Arquivo não encontrado.")
