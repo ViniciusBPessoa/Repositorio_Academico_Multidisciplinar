@@ -8,7 +8,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
         self.malha_atual = None # mantem a malha atravez de um dicionario
 
-    def carregar_malha(self, malha = "piramide", busca = False): # carrega a malha
+    def carregar_malha(self, malha = "piramide"): # carrega a malha
         arquivo_malha = self.diretorio_modelos + f"{malha}.byu" # localiza o arquivo
 
         try: # try (para n dar merda)
@@ -52,7 +52,7 @@ class Gerenciador_camera:
         self.nome_camera_atual = None 
         self.camera_atual = None 
 
-    def carregar_camera(self, camera):
+    def carregar_camera(self, camera = "camera01"):
         arquivo_camera = self.diretorio_cameras + f"{camera}.txt"
 
         try:
@@ -64,7 +64,6 @@ class Gerenciador_camera:
                 for linha, conterudo in enumerate(possiveis_parametros):
                     parametros_camera[conterudo] = linhas[linha].split()
                 
-                print(parametros_camera)
                 self.camera_atual = parametros_camera
                 self.nome_camera_atual = camera
                 return self.camera_atual

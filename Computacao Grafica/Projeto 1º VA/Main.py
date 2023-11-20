@@ -15,6 +15,8 @@ tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption('Modelador')
 
 gerenciador_modelo = gerenciador_arquivos.Gerenciador_Modelo()
+gerenciador_camera = gerenciador_arquivos.Gerenciador_camera()
+gerenciador_camera.carregar_camera("camera01")
 gerenciador_modelo.carregar_malha("piramide")
 
 executando = True
