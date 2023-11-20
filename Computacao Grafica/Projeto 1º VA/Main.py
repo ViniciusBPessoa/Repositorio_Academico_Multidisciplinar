@@ -34,8 +34,16 @@ while executando:
                 gerenciador_modelo.carregar_malha(gerenciador_modelo.nome_malha_atual)
 
             if evento.key == pygame.K_t:
-                print("Hallo, world")
-            
+                while True:
+                    verificador = input("Qual o nome do arquivo da malha (T = retornar): ")
+                    if verificador != "T":
+                        verificador = gerenciador_modelo.carregar_malha(verificador)
+                        if verificador != -1:
+                            break
+                        else:
+                            print("Arquivo não encontrado")
+                            continue
+                
             if evento.key == pygame.K_SPACE:
                 gerenciador_modelo.exibir_malha()
 
