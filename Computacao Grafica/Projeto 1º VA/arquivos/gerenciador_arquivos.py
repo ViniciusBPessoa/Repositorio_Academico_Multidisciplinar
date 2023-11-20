@@ -62,10 +62,12 @@ class Gerenciador_camera:
                 parametros_camera = {}
 
                 for linha, conterudo in enumerate(possiveis_parametros):
-                    parametros_camera[conterudo] = linhas[linha].split()
+                    valor = linhas[linha].split()
+                    parametros_camera[conterudo] = [float(x) for x in valor]
                 
                 self.camera_atual = parametros_camera
                 self.nome_camera_atual = camera
+                print(self.camera_atual)
                 return self.camera_atual
 
         except FileNotFoundError:
