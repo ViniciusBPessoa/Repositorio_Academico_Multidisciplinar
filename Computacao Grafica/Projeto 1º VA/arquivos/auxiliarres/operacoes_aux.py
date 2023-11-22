@@ -17,7 +17,7 @@ def projecao_ortogonal(u, v):
 
 # Exemplo de utilização da função
 vetor_u = [1, 2, 3]
-vetor_v = [2.28571429, 4.57142857, 6.85714286]
+vetor_v = [4, 5, 6]
 
 projetado = projecao_ortogonal(vetor_u, vetor_v)
 print("Projeção ortogonal de v sobre u:", projetado)
