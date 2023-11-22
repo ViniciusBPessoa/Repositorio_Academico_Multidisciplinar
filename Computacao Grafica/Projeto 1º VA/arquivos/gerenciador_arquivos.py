@@ -1,5 +1,5 @@
 import os
-from auxiliares import operacoes_aux
+from auxiliares import operacoes_aux, matematica_aux
 
 # esse codigo temo objetivo de carregar minha malha na memoria formando as duas tabelas em formato de dicionario
 
@@ -7,6 +7,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
     def __init__(self):
         self.diretorio_modelos = os.path.dirname(os.path.abspath(__file__)) + "/modelos/" # Para executar sempre (Carrega a devida localização)
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
+        self.malha_perspectiva = None # essa é a malha final (perpectiva e bem formada)
         self.malha_atual = None # mantem a malha atravez de um dicionario
 
     def carregar_malha(self, malha = "piramide"): # carrega a malha
@@ -36,9 +37,13 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         except FileNotFoundError:
             return -1 # caso o retorno seja -1 o modelo não foi carregado com sucesso
         
-    def projecao_malha(self, camera):
+    def projecao_malha(self, matriz_transfer, foco):
+        lista_final = []
         if self.malha_atual != None:
-            pass
+            lista_coordenadas = self.malha_atual["vertices"]
+            for ponto in lista_coordenadas:
+                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, matematica_aux.subtrair_listas(ponto, foco))
+                lista_final.append(aux)
         else:
             return -1
     
@@ -77,7 +82,7 @@ class Gerenciador_camera:
                 
                 self.camera_atual = parametros_camera
                 self.nome_camera_atual = camera
-                if ortogonalizar:
+                if ortogonalizar: # sendo carregada verifica a ortonormalização 
                     self.completar_camera()
                 return self.camera_atual
 
@@ -85,15 +90,18 @@ class Gerenciador_camera:
             return -1  # Retorna -1 caso o arquivo não seja encontrado
     
     def completar_camera(self):
-        self.camera_atual["V"] = operacoes_aux.ortogonalizador(N=self.camera_atual["N"], V=self.camera_atual["V"])
-        self.camera_atual["U"] = operacoes_aux.gerador_U(N=self.camera_atual["N"], V_ortogonalizado=self.camera_atual["V"])
+        self.camera_atual["V"] = operacoes_aux.ortogonalizador(N=self.camera_atual["N"], V=self.camera_atual["V"]) # ortogonaliza V
+        self.camera_atual["U"] = operacoes_aux.gerador_U(N=self.camera_atual["N"], V_ortogonalizado=self.camera_atual["V"]) # gera U
         # Agora vem a normalização
 
-        self.camera_atual["V"] = operacoes_aux.normalizador(self.camera_atual["V"])
+        self.camera_atual["V"] = operacoes_aux.normalizador(self.camera_atual["V"]) # Vetories sendo normalizados 
         self.camera_atual["U"] = operacoes_aux.normalizador(self.camera_atual["U"])
         self.camera_atual["N"] = operacoes_aux.normalizador(self.camera_atual["N"])
 
-    def exibir_camera(self):
+    def get_Matrix_mudanca(self):
+        return [self.camera_atual["U"], self.camera_atual["V"], self.camera_atual["N"]]
+
+    def exibir_camera(self): # so para printar bonitinho
         if self.camera_atual != None:
             for chave, valor in self.camera_atual.items():
                 print(f'{chave}: {valor}')
@@ -106,4 +114,5 @@ if __name__ == "__main__":
     malha.carregar_malha()
     print(malha.malha_atual)
     parametros_camera = gerenciador_cameras.carregar_camera(nome_arquivo_camera)
-    print(gerenciador_cameras.camera_atual)
+    gerenciador_cameras.exibir_camera()
+    print(gerenciador_cameras.get_Matrix_mudanca())

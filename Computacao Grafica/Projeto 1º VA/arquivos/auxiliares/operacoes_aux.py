@@ -1,6 +1,6 @@
 import numpy as np
 
-def projecao_ortogonal(N, V):
+def projecao_ortogonal(N, V):  # recebe 2 vetores e devolve a projeção entre eles
     N = np.array(N)
     V = np.array(V)
     
@@ -15,16 +15,16 @@ def projecao_ortogonal(N, V):
     
     return proj_n_v.tolist()
 
-def novo_v(V, proj_N_V):
+def novo_v(V, proj_N_V): # calcula um novo V usando ele mesmo e sua projeção
     V = np.array(V)
     proj = np.array(proj_N_V)
     return (V - proj).tolist()
 
 
-def ortogonalizador(N, V):
+def ortogonalizador(N, V): # recebe 2 vetores e devolve as novas coordenandas do 2 mas dessa vez a 90 graus do 1
     return novo_v(V, projecao_ortogonal(N, V))
 
-def gerador_U(N, V_ortogonalizado):
+def gerador_U(N, V_ortogonalizado):  # calcula o U da camera
     N = np.array(N)
     V_ortogonalizado = np.array(V_ortogonalizado)
     
@@ -33,7 +33,7 @@ def gerador_U(N, V_ortogonalizado):
     
     return produto.tolist()
 
-def normalizador(vetor):
+def normalizador(vetor): # Normaliza um vetor
     vetor_quad = np.power(vetor, 2)
     norma = np.sum(vetor_quad) ** 0.5
     return vetor / norma
