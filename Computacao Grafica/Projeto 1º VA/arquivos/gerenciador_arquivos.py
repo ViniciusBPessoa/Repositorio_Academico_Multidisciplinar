@@ -1,4 +1,5 @@
 import os
+from auxiliares import operacoes_aux
 
 # esse codigo temo objetivo de carregar minha malha na memoria formando as duas tabelas em formato de dicionario
 
@@ -58,7 +59,7 @@ class Gerenciador_camera:
         self.nome_camera_atual = None 
         self.camera_atual = None 
 
-    def carregar_camera(self, camera = "camera01"):
+    def carregar_camera(self, camera = "camera01", ortogonalizar = True):
         arquivo_camera = self.diretorio_cameras + f"{camera}.txt"
 
         try:
@@ -73,11 +74,22 @@ class Gerenciador_camera:
                 
                 self.camera_atual = parametros_camera
                 self.nome_camera_atual = camera
+                if ortogonalizar:
+                    self.completar_camera()
                 return self.camera_atual
 
         except FileNotFoundError:
             return -1  # Retorna -1 caso o arquivo não seja encontrado
     
+    def completar_camera(self):
+        self.camera_atual["V"] = operacoes_aux.ortogonalizador(N=self.camera_atual["N"], V=self.camera_atual["V"])
+        self.camera_atual["U"] = operacoes_aux.gerador_U(N=self.camera_atual["N"], V_ortogonalizado=self.camera_atual["V"])
+        # Agora vem a normalização
+
+        self.camera_atual["V"] = operacoes_aux.normalizador(self.camera_atual["V"])
+        self.camera_atual["U"] = operacoes_aux.normalizador(self.camera_atual["U"])
+        self.camera_atual["N"] = operacoes_aux.normalizador(self.camera_atual["N"])
+
     def exibir_camera(self):
         if self.camera_atual != None:
             for chave, valor in self.camera_atual.items():
