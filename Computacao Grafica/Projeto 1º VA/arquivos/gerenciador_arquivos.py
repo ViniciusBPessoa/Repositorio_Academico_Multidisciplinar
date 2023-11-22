@@ -34,6 +34,12 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
 
         except FileNotFoundError:
             return -1 # caso o retorno seja -1 o modelo não foi carregado com sucesso
+        
+    def projecao_malha(self, camera):
+        if self.malha_atual != None:
+            pass
+        else:
+            return -1
     
 
     def exibir_malha(self): # so printa bonitinho
@@ -67,13 +73,22 @@ class Gerenciador_camera:
                 
                 self.camera_atual = parametros_camera
                 self.nome_camera_atual = camera
-                print(self.camera_atual)
                 return self.camera_atual
 
         except FileNotFoundError:
             return -1  # Retorna -1 caso o arquivo não seja encontrado
+    
+    def exibir_camera(self):
+        if self.camera_atual != None:
+            for chave, valor in self.camera_atual.items():
+                print(f'{chave}: {valor}')
+
 
 if __name__ == "__main__":
     gerenciador_cameras = Gerenciador_camera()
     nome_arquivo_camera = "camera01"  # Substitua pelo nome do arquivo da câmera desejado
+    malha = Gerenciador_Modelo()
+    malha.carregar_malha()
+    print(malha.malha_atual)
     parametros_camera = gerenciador_cameras.carregar_camera(nome_arquivo_camera)
+    print(gerenciador_cameras.camera_atual)
