@@ -43,7 +43,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             return -1
     
 
-    def exibir_malha(self): # so printa bonitinho
+    def exibir_malha(self): # So printa bonitinho
         if self.malha_atual != None:
             print("Vértices da Malha Carregada:")
             for indice, vertice in enumerate(self.malha_atual['vertices'], start=1):
@@ -59,16 +59,19 @@ class Gerenciador_camera:
         self.nome_camera_atual = None 
         self.camera_atual = None 
 
-    def carregar_camera(self, camera = "camera01", ortogonalizar = True):
+    def carregar_camera(self, camera = "camera01", ortogonalizar = True): # Responsavel por carregar as informaçoes da camera
+        # Caso ortogonalizar seja verdadeiro a variavel camera_atual sera completa com (V, N, U) carregados e ortonormalizados  caso seja falsa ele apenas carrega da memoria  
+
+
         arquivo_camera = self.diretorio_cameras + f"{camera}.txt"
 
-        try:
+        try:  # verifica se o arquivo esta ou não na memoria
             with open(arquivo_camera, 'r') as camera_carregada:
                 linhas = camera_carregada.readlines()
                 possiveis_parametros = ['N', 'V', 'd', 'Hx', 'Hy', "C"]
                 parametros_camera = {}
 
-                for linha, conterudo in enumerate(possiveis_parametros):
+                for linha, conterudo in enumerate(possiveis_parametros):  # caso o mesmo esteja, essa parte anexa todos os itens a um dicionario
                     valor = linhas[linha].split()
                     parametros_camera[conterudo] = [float(x) for x in valor]
                 
