@@ -36,10 +36,9 @@ def gerador_U(N, V_ortogonalizado):  # calcula o U da camera
 def normalizador(vetor): # Normaliza um vetor
     vetor_quad = np.power(vetor, 2)
     norma = np.sum(vetor_quad) ** 0.5
-    return vetor / norma
+    return (vetor / norma).tolist()
 
 # Exemplo de utilização da função
 vetor_n = [-1, -1, -1]
 vetor_v = [0, 0, 1]
 
-print(gerador_U(vetor_n, ortogonalizador(vetor_n, vetor_v)))

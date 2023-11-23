@@ -1,4 +1,7 @@
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from auxiliares import operacoes_aux, matematica_aux
 
 # esse codigo temo objetivo de carregar minha malha na memoria formando as duas tabelas em formato de dicionario
@@ -42,8 +45,9 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         if self.malha_atual != None:
             lista_coordenadas = self.malha_atual["vertices"]
             for ponto in lista_coordenadas:
-                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, matematica_aux.subtrair_listas(ponto, foco))
+                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, [matematica_aux.subtrair_listas(ponto, foco)])
                 lista_final.append(aux)
+            print(lista_final)
         else:
             return -1
     

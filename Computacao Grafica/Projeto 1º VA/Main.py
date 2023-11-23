@@ -7,7 +7,6 @@ sys.path.append(diretorio_modelos)
 
 from arquivos import gerenciador_arquivos
 
-
 pygame.init()
 
 largura, altura = 1366, 720
@@ -18,6 +17,8 @@ gerenciador_modelo = gerenciador_arquivos.Gerenciador_Modelo()
 gerenciador_camera = gerenciador_arquivos.Gerenciador_camera()
 gerenciador_camera.carregar_camera("camera01")
 gerenciador_modelo.carregar_malha("piramide")
+
+gerenciador_modelo.projecao_malha(gerenciador_camera.get_Matrix_mudanca(), gerenciador_camera.camera_atual["C"])
 
 executando = True
 while executando:
@@ -52,7 +53,6 @@ while executando:
 
             if evento.key == pygame.K_ESCAPE:
                 executando = False
-
 
     # Atualiza a tela
     pygame.display.update()
