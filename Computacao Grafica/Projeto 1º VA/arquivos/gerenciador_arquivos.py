@@ -42,10 +42,12 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         
     def projecao_malha(self, matriz_transfer, foco):
         lista_final = []
-        if self.malha_atual != None:
+        if self.malha_atual != None: # caso a malha ainda não esteja carregada 0
             lista_coordenadas = self.malha_atual["vertices"]
             for ponto in lista_coordenadas:
-                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, [matematica_aux.subtrair_listas(ponto, foco)])
+                ponto = matematica_aux.subtrair_listas(ponto, foco)
+                entrada_ponto = [[ponto[0]], [ponto[1]], [ponto[2]]]
+                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, entrada_ponto)
                 lista_final.append(aux)
             print(lista_final)
         else:

@@ -5,7 +5,7 @@ import sys
 diretorio_modelos = os.path.dirname(os.path.abspath(__file__))  # Para executar sempre (Carrega a devida localização)
 sys.path.append(diretorio_modelos)
 
-from arquivos import gerenciador_arquivos
+from arquivos import gerenciador_arquivos 
 
 pygame.init()
 
