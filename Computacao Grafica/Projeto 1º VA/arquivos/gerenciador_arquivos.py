@@ -41,18 +41,21 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             return -1 # caso o retorno seja -1 o modelo não foi carregado com sucesso
         
     def projecao_malha(self, matriz_transfer, foco, distancia_camera):
-        lista_final = [] # carrega a lista com os vetores ate o fim (com as transiçoes corretas e a perspectiva)
+        lista_projetada = [] # carrega a lista com os vetores ate o fim (com as transiçoes corretas e a perspectiva)
         
         if self.malha_atual != None: # caso a malha ainda não esteja carregada 0
             lista_coordenadas = self.malha_atual["vertices"]
 
             for ponto in lista_coordenadas:
-                ponto = matematica_aux.subtrair_listas(ponto, foco)
-                entrada_ponto = [[ponto[0]], [ponto[1]], [ponto[2]]] # trans
-                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, entrada_ponto) # tudo agora esta na base correta (resta perspectiva)
-                aux = [distancia_camera * (aux[0][0]/aux[2][0]), distancia_camera * (aux[1][0]/aux[2][0])]
-                print(aux)
-                lista_final.append(aux)
+                # Transição linear
+                ponto = matematica_aux.subtrair_listas(ponto, foco) # P - C
+                ponto = [[ponto[0]], [ponto[1]], [ponto[2]]] # passa o ponto para uma matris de 1 coluna
+                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, ponto) # tudo agora esta na base correta (resta perspectiva)
+
+                # perpectiva
+                aux = [distancia_camera * (aux[0][0]/aux[2][0]), distancia_camera * (aux[1][0]/aux[2][0])] # adiciona perspectiva e remove o eixo Z
+                lista_projetada.append(aux)
+            print(lista_projetada)
         else:
             return -1
     
@@ -86,7 +89,7 @@ class Gerenciador_camera:
                 parametros_camera = {}
 
                 for linha, conterudo in enumerate(possiveis_parametros):  # caso o mesmo esteja, essa parte anexa todos os itens a um dicionario
-                    valor = linhas[linha].split()
+                    valor = linhas[linha].split() # função magica do python
                     parametros_camera[conterudo] = [float(x) for x in valor]
                 
                 self.camera_atual = parametros_camera

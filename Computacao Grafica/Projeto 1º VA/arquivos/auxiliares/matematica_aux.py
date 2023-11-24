@@ -16,10 +16,10 @@ def multiplicar_matrizes(matriz1, matriz2):
 
     # Verifica se as matrizes podem ser multiplicadas
     if colunas_matriz1 != linhas_matriz2:
-        return "Não é possível multiplicar as matrizes. O número de colunas da primeira matriz não é igual ao número de linhas da segunda matriz."
+        return "Não é possível multiplicar as matrizes"
 
     # Inicializa a matriz resultado com zeros
-    resultado = [[0 for _ in range(colunas_matriz2)] for _ in range(linhas_matriz1)]
+    resultado = [[0 for M in range(colunas_matriz2)] for M in range(linhas_matriz1)]
 
     # Multiplicação das matrizes
     for i in range(linhas_matriz1):
@@ -29,17 +29,8 @@ def multiplicar_matrizes(matriz1, matriz2):
 
     return resultado
 
-def transpor_matriz(matriz):
-    # Obtém o número de linhas e colunas da matriz original
-    num_linhas = len(matriz)
-    num_colunas = len(matriz[0])
+def elevador_matriz(lista, expoente):
+    return [item ** expoente for item in lista]
 
-    # Inicializa a matriz transposta com zeros
-    matriz_transposta = [[0 for _ in range(num_linhas)] for _ in range(num_colunas)]
-
-    # Preenche a matriz transposta com os elementos da matriz original
-    for i in range(num_linhas):
-        for j in range(num_colunas):
-            matriz_transposta[j][i] = matriz[i][j]
-
-    return matriz_transposta
+def dividir_matriz(lista, divisor):
+    return [item / divisor for item in lista]
