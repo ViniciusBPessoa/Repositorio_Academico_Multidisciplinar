@@ -40,16 +40,19 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         except FileNotFoundError:
             return -1 # caso o retorno seja -1 o modelo não foi carregado com sucesso
         
-    def projecao_malha(self, matriz_transfer, foco):
-        lista_final = []
+    def projecao_malha(self, matriz_transfer, foco, distancia_camera):
+        lista_final = [] # carrega a lista com os vetores ate o fim (com as transiçoes corretas e a perspectiva)
+        
         if self.malha_atual != None: # caso a malha ainda não esteja carregada 0
             lista_coordenadas = self.malha_atual["vertices"]
+
             for ponto in lista_coordenadas:
                 ponto = matematica_aux.subtrair_listas(ponto, foco)
-                entrada_ponto = [[ponto[0]], [ponto[1]], [ponto[2]]]
-                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, entrada_ponto)
+                entrada_ponto = [[ponto[0]], [ponto[1]], [ponto[2]]] # trans
+                aux = matematica_aux.multiplicar_matrizes(matriz_transfer, entrada_ponto) # tudo agora esta na base correta (resta perspectiva)
+                aux = [distancia_camera * (aux[0][0]/aux[2][0]), distancia_camera * (aux[1][0]/aux[2][0])]
+                print(aux)
                 lista_final.append(aux)
-            print(lista_final)
         else:
             return -1
     

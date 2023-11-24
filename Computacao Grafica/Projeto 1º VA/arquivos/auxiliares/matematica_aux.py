@@ -1,5 +1,12 @@
 def subtrair_listas(lista1, lista2):
-    return [a - b for a, b in zip(lista1, lista2)]
+    # Verifica se as listas têm o mesmo comprimento
+    if len(lista1) != len(lista2):
+        return "As listas têm comprimentos diferentes. Não é possível subtrair."
+
+    # Realiza a subtração elemento por elemento
+    resultado = [lista1[i] - lista2[i] for i in range(len(lista1))]
+
+    return resultado
 
 def multiplicar_matrizes(matriz1, matriz2):
     linhas_matriz1 = len(matriz1)
@@ -21,3 +28,18 @@ def multiplicar_matrizes(matriz1, matriz2):
                 resultado[i][j] += matriz1[i][k] * matriz2[k][j]
 
     return resultado
+
+def transpor_matriz(matriz):
+    # Obtém o número de linhas e colunas da matriz original
+    num_linhas = len(matriz)
+    num_colunas = len(matriz[0])
+
+    # Inicializa a matriz transposta com zeros
+    matriz_transposta = [[0 for _ in range(num_linhas)] for _ in range(num_colunas)]
+
+    # Preenche a matriz transposta com os elementos da matriz original
+    for i in range(num_linhas):
+        for j in range(num_colunas):
+            matriz_transposta[j][i] = matriz[i][j]
+
+    return matriz_transposta

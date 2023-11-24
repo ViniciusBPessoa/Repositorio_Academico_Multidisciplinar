@@ -18,7 +18,7 @@ gerenciador_camera = gerenciador_arquivos.Gerenciador_camera()
 gerenciador_camera.carregar_camera("camera01")
 gerenciador_modelo.carregar_malha("piramide")
 
-gerenciador_modelo.projecao_malha(gerenciador_camera.get_Matrix_mudanca(), gerenciador_camera.camera_atual["C"])
+gerenciador_modelo.projecao_malha(gerenciador_camera.get_Matrix_mudanca(), gerenciador_camera.camera_atual["C"], gerenciador_camera.camera_atual["d"][0])
 
 executando = True
 while executando:

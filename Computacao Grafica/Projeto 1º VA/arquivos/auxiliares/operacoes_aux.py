@@ -41,4 +41,3 @@ def normalizador(vetor): # Normaliza um vetor
 # Exemplo de utilização da função
 vetor_n = [-1, -1, -1]
 vetor_v = [0, 0, 1]
-
