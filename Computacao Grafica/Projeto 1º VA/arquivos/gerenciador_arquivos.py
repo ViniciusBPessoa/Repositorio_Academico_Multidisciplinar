@@ -12,6 +12,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
         self.malha_perspectiva = None # essa é a malha final (perpectiva e bem formada)
         self.malha_atual = None # mantem a malha atravez de um dicionario
+        self.rasteiros = None
 
     def carregar_malha(self, malha = "piramide"): # carrega a malha
         arquivo_malha = self.diretorio_modelos + f"{malha}.byu" # localiza o arquivo
@@ -63,7 +64,24 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             self.malha_perspectiva = lista_projetada
         else:
             return -1
+        
+    def rasteirizacao(self):
+        arestas = self.malha_atual["faces"]
     
+    def linha(self, ponto1, ponto2, lista : list):
+        deltax = int(ponto2[0] - ponto1[0]) 
+        deltay = int(ponto2[1] - ponto1[1])
+        erro = 0
+        erro_delta = int(deltay / deltax)
+        y = ponto1[1]
+        for x in range(ponto1[0], ponto2[0] + 1):
+            lista.append(x, y)
+            erro = erro + erro_delta
+            if erro >= 0.5:
+                y += 1
+                erro = erro - 1
+                
+        return lista
 
     def exibir_malha(self): # So printa bonitinho
         if self.malha_atual != None:
