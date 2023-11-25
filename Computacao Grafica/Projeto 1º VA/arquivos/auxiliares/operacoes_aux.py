@@ -38,7 +38,3 @@ def normalizador(vetor): # Normaliza um vetor
     vetor_quad = matematica_aux.elevador_matriz(vetor, 2)
     norma = sum(vetor_quad) ** 0.5
     return matematica_aux.dividir_matriz(vetor, norma)
-
-# Exemplo de utilização da função
-vetor_n = [-1, -1, -1]
-vetor_v = [0, 0, 1]

@@ -7,16 +7,7 @@ import pygame
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from arquivos import gerenciador_arquivos # gerencia as malhas e as cameras
-
-def loader_malha(gerenciador_modelo, gerenciador_camera, modelo, normal_Hxy, resolu):
-    verificador = gerenciador_modelo.carregar_malha(modelo)
-    if verificador != -1:
-        gerenciador_modelo.projecao_malha(gerenciador_camera.get_Matrix_mudanca(), gerenciador_camera.camera_atual["C"], normal_Hxy, resolu)
-    return verificador
-
-def loader_normal_Hxy(gerenciador_camera):
-    return [gerenciador_camera.camera_atual["d"][0] / gerenciador_camera.camera_atual["Hx"][0], gerenciador_camera.camera_atual["d"][0] / gerenciador_camera.camera_atual["Hy"][0]]
-
+from arquivos.auxiliares.aux_main import loader_malha, loader_normal_Hxy
 
 def plota_pontos(janela, pontos, cor_ponto):
     for ponto in pontos:
@@ -36,7 +27,7 @@ normal_Hxy = loader_normal_Hxy(gerenciador_camera)
 # Carregador de malha apenas instancia a classe
 gerenciador_modelo = gerenciador_arquivos.Gerenciador_Modelo() 
 
-loader_malha(gerenciador_modelo, gerenciador_camera, "piramide", normal_Hxy, resolu)
+loader_malha(gerenciador_modelo, gerenciador_camera, "calice2", normal_Hxy, resolu)
 
 executando = True
 while executando:
