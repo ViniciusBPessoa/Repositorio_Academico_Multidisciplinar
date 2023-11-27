@@ -109,7 +109,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 break
             
             erro2 = 2 * erro
-            
+
             if erro2 > -deltay:
                 erro -= deltay
                 x += sx
@@ -119,7 +119,6 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 y += sy
         
         return lista
-
 
     def exibir_malha(self): # So printa bonitinho
         if self.malha_atual != None:
