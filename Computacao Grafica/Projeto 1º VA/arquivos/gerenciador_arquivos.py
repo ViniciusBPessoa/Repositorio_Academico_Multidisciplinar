@@ -62,26 +62,64 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 lista_projetada.append(aux)
             print(lista_projetada)
             self.malha_perspectiva = lista_projetada
+            self.rasteirizacao()
         else:
             return -1
         
     def rasteirizacao(self):
-        arestas = self.malha_atual["faces"]
+        faces = self.malha_atual["faces"]
+        self.rasteiros = []
+        print(faces)
+        for face in faces:
+            linhas = []
+            linha = self.linha(self.malha_perspectiva[face[0] - 1], self.malha_perspectiva[face[1] - 1])
+            linhas.append(linha)
+            linha = self.linha(self.malha_perspectiva[face[1] - 1], self.malha_perspectiva[face[2] - 1])
+            linhas.append(linha)
+            linha = self.linha(self.malha_perspectiva[face[2] - 1], self.malha_perspectiva[face[0] - 1])
+            linhas.append(linha)
+            self.rasteiros.append(linhas)
     
-    def linha(self, ponto1, ponto2, lista : list):
-        deltax = int(ponto2[0] - ponto1[0]) 
-        deltay = int(ponto2[1] - ponto1[1])
-        erro = 0
-        erro_delta = int(deltay / deltax)
-        y = ponto1[1]
-        for x in range(ponto1[0], ponto2[0] + 1):
-            lista.append(x, y)
-            erro = erro + erro_delta
-            if erro >= 0.5:
-                y += 1
-                erro = erro - 1
-                
+    def linha(self, ponto1, ponto2):
+        lista = []
+        x1, y1 = ponto1
+        x2, y2 = ponto2
+        
+        deltax = abs(x2 - x1)
+        deltay = abs(y2 - y1)
+        
+        if x1 < x2:
+            sx = 1
+        else:
+            sx = -1
+        if y1 < y2:
+            sy = 1
+        else:
+            sy = -1
+        
+        erro = deltax - deltay
+        
+        x = x1
+        y = y1
+        
+        while True:
+            lista.append((x, y))
+            
+            if x == x2 and y == y2:
+                break
+            
+            erro2 = 2 * erro
+            
+            if erro2 > -deltay:
+                erro -= deltay
+                x += sx
+            
+            if erro2 < deltax:
+                erro += deltax
+                y += sy
+        
         return lista
+
 
     def exibir_malha(self): # So printa bonitinho
         if self.malha_atual != None:
@@ -151,3 +189,5 @@ if __name__ == "__main__":
     parametros_camera = gerenciador_cameras.carregar_camera(nome_arquivo_camera)
     gerenciador_cameras.exibir_camera()
     print(gerenciador_cameras.get_Matrix_mudanca())
+
+    

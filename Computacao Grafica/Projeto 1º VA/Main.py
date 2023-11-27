@@ -9,9 +9,14 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from arquivos import gerenciador_arquivos # gerencia as malhas e as cameras
 from arquivos.auxiliares.aux_main import loader_malha, loader_normal_Hxy
 
-def plota_pontos(janela, pontos, cor_ponto):
+def plota_pontos(janela, pontos, cor_ponto, faces):
     for ponto in pontos:
-        pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 2, 2))
+        pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
+
+    for face in faces:
+        for aresta in face:
+            for ponto in aresta:
+               pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1)) 
 
 pygame.init()
 
@@ -64,7 +69,7 @@ while executando:
             if evento.key == pygame.K_7:
                 webbrowser.open("https://www.youtube.com/watch?v=VBJvDgBZEi4")
 
-    plota_pontos(tela, gerenciador_modelo.malha_perspectiva, (255,255,255))
+    plota_pontos(tela, gerenciador_modelo.malha_perspectiva, (255,255,255), gerenciador_modelo.rasteiros)
 
     # Atualiza a tela
     pygame.display.update()
