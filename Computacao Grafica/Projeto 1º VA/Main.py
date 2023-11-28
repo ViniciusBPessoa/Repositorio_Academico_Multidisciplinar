@@ -1,6 +1,7 @@
 import os
 import sys
 import webbrowser
+from time import sleep
 
 # Inicio da brincadeira
 import pygame
@@ -9,14 +10,16 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from arquivos import gerenciador_arquivos # gerencia as malhas e as cameras
 from arquivos.auxiliares.aux_main import loader_malha, loader_normal_Hxy
 
-def plota_pontos(janela, pontos, cor_ponto, faces):
+def plota_obj(janela, pontos, cor_ponto, faces, estado = 3):
     for ponto in pontos:
         pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
 
-    for face in faces:
-        for aresta in face:
-            for ponto in aresta:
-               pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1)) 
+    if estado == 3 or estado == 2:
+
+        for face in faces:
+            for aresta in face:
+                for ponto in aresta:
+                    pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
 
 pygame.init()
 
@@ -32,6 +35,7 @@ normal_Hxy = loader_normal_Hxy(gerenciador_camera)
 # Carregador de malha apenas instancia a classe
 gerenciador_modelo = gerenciador_arquivos.Gerenciador_Modelo() 
 
+estado_plot = 3
 loader_malha(gerenciador_modelo, gerenciador_camera, "calice2", normal_Hxy, resolu)
 
 executando = True
@@ -66,10 +70,17 @@ while executando:
             if evento.key == pygame.K_ESCAPE:
                 executando = False
             
+            if evento.key == pygame.K_1:
+                estado_plot = 1
+            if evento.key == pygame.K_2:
+                estado_plot = 2
+            if evento.key == pygame.K_3:
+                estado_plot = 3
+            
             if evento.key == pygame.K_7:
                 webbrowser.open("https://www.youtube.com/watch?v=VBJvDgBZEi4")
 
-    plota_pontos(tela, gerenciador_modelo.malha_perspectiva, (255,255,255), gerenciador_modelo.rasteiros)
+    plota_obj(tela, gerenciador_modelo.malha_perspectiva, (255,255,255), gerenciador_modelo.rasteiros, estado_plot)
 
     # Atualiza a tela
     pygame.display.update()
