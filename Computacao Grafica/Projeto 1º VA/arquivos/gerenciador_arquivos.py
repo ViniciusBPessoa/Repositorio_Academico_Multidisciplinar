@@ -103,7 +103,6 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         y = y1
         
         while True:
-            lista.append((x, y))
             
             if x == x2 and y == y2:
                 break
@@ -117,6 +116,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             if erro2 < deltax:
                 erro += deltax
                 y += sy
+            
+            lista.append((x, y))
         
         return lista
 
