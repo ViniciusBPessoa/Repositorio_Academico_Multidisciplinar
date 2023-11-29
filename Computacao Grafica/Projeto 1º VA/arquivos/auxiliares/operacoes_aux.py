@@ -38,3 +38,7 @@ def normalizador(vetor): # Normaliza um vetor
     vetor_quad = matematica_aux.elevador_matriz(vetor, 2)
     norma = sum(vetor_quad) ** 0.5
     return matematica_aux.dividir_matriz(vetor, norma)
+
+def item_central(lista):
+    indice_central = len(lista) // 2
+    return lista[indice_central]

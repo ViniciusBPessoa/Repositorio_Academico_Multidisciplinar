@@ -36,7 +36,7 @@ normal_Hxy = loader_normal_Hxy(gerenciador_camera)
 gerenciador_modelo = gerenciador_arquivos.Gerenciador_Modelo() 
 
 estado_plot = 3
-loader_malha(gerenciador_modelo, gerenciador_camera, "calice2", normal_Hxy, resolu)
+loader_malha(gerenciador_modelo, gerenciador_camera, "triangulo", normal_Hxy, resolu)
 
 executando = True
 while executando:

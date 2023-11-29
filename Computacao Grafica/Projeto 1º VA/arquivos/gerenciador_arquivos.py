@@ -72,14 +72,24 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         print(faces)
         for face in faces:
             linhas = []
-            linha = self.linha(self.malha_perspectiva[face[0] - 1], self.malha_perspectiva[face[1] - 1])
-            linhas.append(linha)
+
             linha = self.linha(self.malha_perspectiva[face[1] - 1], self.malha_perspectiva[face[2] - 1])
+            linha_oposta = linha
             linhas.append(linha)
             linha = self.linha(self.malha_perspectiva[face[2] - 1], self.malha_perspectiva[face[0] - 1])
             linhas.append(linha)
+            
+            if len(linha_oposta) != 0:
+                lista_rastera_interna = []
+                ponto_d = operacoes_aux.item_central(linha_oposta)
+                ponto_b = self.malha_perspectiva[face[1] - 1]
+                linha = self.linha(self.malha_perspectiva[face[0] - 1], ponto_d)
+                linhas.append(linha)
+
+
+
+
             self.rasteiros.append(linhas)
-    
     def linha(self, ponto1, ponto2):
         lista = []
         x1, y1 = ponto1
