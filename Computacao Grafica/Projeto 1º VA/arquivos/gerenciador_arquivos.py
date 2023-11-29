@@ -4,6 +4,26 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from auxiliares import operacoes_aux, matematica_aux
 
+def ponto_medio(p1, p2):
+    return ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
+
+def ponto_no_meio(p1, p2, p3):
+    mid_p1_p2 = ponto_medio(p1, p2)
+    if p1[0] == p2[0]:  # Verifica se os pontos p1 e p2 estão na mesma linha vertical
+        return p1 if (p3[0] == p1[0]) else p2
+    else:
+        slope = (p2[1] - p1[1]) / (p2[0] - p1[0])
+        b = mid_p1_p2[1] - slope * mid_p1_p2[0]
+        x = (p3[1] - b) / slope
+        middle_point = (x, p3[1])
+
+        if middle_point[0] == mid_p1_p2[0]:
+            return p3
+        elif middle_point[0] < mid_p1_p2[0]:
+            return p1 if p1[0] < p2[0] else p2
+        else:
+            return p2 if p1[0] < p2[0] else p1
+
 # esse codigo temo objetivo de carregar minha malha na memoria formando as duas tabelas em formato de dicionario
 
 class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
@@ -71,27 +91,26 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         self.rasteiros = []
         print(faces)
         for face in faces:
+
+            a = self.malha_perspectiva[face[0] - 1]
+            b = self.malha_perspectiva[face[1] - 1]
+            c = self.malha_perspectiva[face[2] - 1]
+
             linhas = []
-            linha = self.linha(self.malha_perspectiva[face[0] - 1], self.malha_perspectiva[face[1] - 1])
+            linha = self.linha(a, b)
             linhas.append(linha)
-            linha = self.linha(self.malha_perspectiva[face[1] - 1], self.malha_perspectiva[face[2] - 1])
-            linha_oposta = linha
+            linha = self.linha(b, c)
             linhas.append(linha)
-            linha = self.linha(self.malha_perspectiva[face[2] - 1], self.malha_perspectiva[face[0] - 1])
+            linha = self.linha(c, a)
             linhas.append(linha)
             
-            if len(linha_oposta) != 0:
-                lista_rastera_interna = []
-                ponto_d = operacoes_aux.item_central(linha_oposta)
-                ponto_b = self.malha_perspectiva[face[1] - 1]
-                linha = self.linha(self.malha_perspectiva[face[0] - 1], ponto_d)
-                linhas.append(linha)
-
-                
-
-
-
             self.rasteiros.append(linhas)
+
+
+            valor = ponto_no_meio(a,b,c)
+            valor = (valor[0] + 6, valor[1] + 6)
+
+
     def linha(self, ponto1, ponto2):
         lista = []
         x1, y1 = ponto1
