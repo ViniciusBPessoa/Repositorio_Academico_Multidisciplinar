@@ -72,7 +72,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         print(faces)
         for face in faces:
             linhas = []
-
+            linha = self.linha(self.malha_perspectiva[face[0] - 1], self.malha_perspectiva[face[1] - 1])
+            linhas.append(linha)
             linha = self.linha(self.malha_perspectiva[face[1] - 1], self.malha_perspectiva[face[2] - 1])
             linha_oposta = linha
             linhas.append(linha)
@@ -86,6 +87,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 linha = self.linha(self.malha_perspectiva[face[0] - 1], ponto_d)
                 linhas.append(linha)
 
+                
 
 
 
