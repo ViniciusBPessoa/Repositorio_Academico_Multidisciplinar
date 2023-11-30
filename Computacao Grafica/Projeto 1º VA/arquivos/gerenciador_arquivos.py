@@ -4,26 +4,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from auxiliares import operacoes_aux, matematica_aux
 
-def ponto_medio(p1, p2):
-    return ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
-
-def ponto_no_meio(p1, p2, p3):
-    mid_p1_p2 = ponto_medio(p1, p2)
-    if p1[0] == p2[0]:  # Verifica se os pontos p1 e p2 estão na mesma linha vertical
-        return p1 if (p3[0] == p1[0]) else p2
-    else:
-        slope = (p2[1] - p1[1]) / (p2[0] - p1[0])
-        b = mid_p1_p2[1] - slope * mid_p1_p2[0]
-        x = (p3[1] - b) / slope
-        middle_point = (x, p3[1])
-
-        if middle_point[0] == mid_p1_p2[0]:
-            return p3
-        elif middle_point[0] < mid_p1_p2[0]:
-            return p1 if p1[0] < p2[0] else p2
-        else:
-            return p2 if p1[0] < p2[0] else p1
-
 # esse codigo temo objetivo de carregar minha malha na memoria formando as duas tabelas em formato de dicionario
 
 class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
@@ -32,7 +12,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
         self.malha_perspectiva = None # essa é a malha final (perpectiva e bem formada)
         self.malha_atual = None # mantem a malha atravez de um dicionario
-        self.rasteiros = None
+        self.rasteiros = None # total rasteiros
+        self.preenchimento = None
 
     def carregar_malha(self, malha = "piramide"): # carrega a malha
         arquivo_malha = self.diretorio_modelos + f"{malha}.byu" # localiza o arquivo
@@ -89,6 +70,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
     def rasteirizacao(self):
         faces = self.malha_atual["faces"]
         self.rasteiros = []
+        self.preenchimento = []
         print(faces)
         for face in faces:
 
@@ -97,18 +79,75 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             c = self.malha_perspectiva[face[2] - 1]
 
             linhas = []
-            linha = self.linha(a, b)
-            linhas.append(linha)
-            linha = self.linha(b, c)
-            linhas.append(linha)
-            linha = self.linha(c, a)
-            linhas.append(linha)
+            linha_a_b = self.linha(a, b)
+            linhas.append(linha_a_b)
+
+            linha_b_c = self.linha(b, c)
+            linhas.append(linha_b_c)
+
+            linha_c_a = self.linha(c, a)
+            linhas.append(linha_c_a)
+
+            lista_pontos = [a,b,c]
+            ponto_central = operacoes_aux.encontrar_centro(lista_pontos)
+            ponto_a_b_c = lista_pontos[ponto_central]
+
+            if ponto_central == 0:
+                ponto_d = operacoes_aux.item_central(linha_b_c, ponto_a_b_c[1])
+            elif ponto_central == 1:
+                ponto_d = operacoes_aux.item_central(linha_c_a, ponto_a_b_c[1])
+            elif ponto_central == 2:
+                ponto_d = operacoes_aux.item_central(linha_a_b, ponto_a_b_c[1])
             
-            self.rasteiros.append(linhas)
+            if ponto_d != -1:
 
+                listra_corte = self.linha(ponto_d, ponto_a_b_c)
+                linhas.append(listra_corte)
+                self.rasteiros.append(linhas)
 
-            valor = ponto_no_meio(a,b,c)
-            valor = (valor[0] + 6, valor[1] + 6)
+                for id_inicial in range(len(lista_pontos)):
+                    if id_inicial != ponto_central:
+                        ponto_referencia = lista_pontos[id_inicial]
+                        if ponto_referencia[1] > ponto_a_b_c[1]:
+                            a_min = (ponto_a_b_c[1] - ponto_referencia[1]) / (ponto_a_b_c[0] - ponto_referencia[0])
+                            a_max = (ponto_d[1] - ponto_referencia[1]) / (ponto_d[0] - ponto_referencia[0])
+                            
+                            x_min = int((1/a_min) + ponto_referencia[0])
+                            x_max = int((1/a_max) + ponto_referencia[0])
+                            print(a_min, a_max, x_min, x_max)
+                            y = ponto_referencia[1]
+                            pontos_plot = []
+                            while True:
+                                x_min = int((1/a_min) + ponto_referencia[0])
+                                x_max = int((1/a_max) + ponto_referencia[0])
+                                linha = []
+                                for x in range(x_min, x_max):
+                                    linha.append([x, y])
+                                y -= 1
+                                pontos_plot.append(linha)
+                                if y == ponto_d[1]:
+                                    break
+                        else:
+                            a_min = (ponto_a_b_c[1] - ponto_referencia[1]) / (ponto_a_b_c[0] - ponto_referencia[0])
+                            a_max = (ponto_d[1] - ponto_referencia[1]) / (ponto_d[0] - ponto_referencia[0])
+                            
+                            x_min = int((1/a_min) + ponto_referencia[0])
+                            x_max = int((1/a_max) + ponto_referencia[0])
+                            print(a_min, a_max, x_min, x_max)
+                            y = ponto_referencia[1]
+                            pontos_plot = []
+                            while True:
+                                x_min = int((1/a_min) + ponto_referencia[0])
+                                x_max = int((1/a_max) + ponto_referencia[0])
+                                linha = []
+                                for x in range(x_min, x_max):
+                                    linha.append([x, y])
+                                y += 1
+                                pontos_plot.append(linha)
+                                if y == ponto_d[1]:
+                                    break
+                        
+                        self.preenchimento.append(linha)
 
 
     def linha(self, ponto1, ponto2):
@@ -166,7 +205,7 @@ class Gerenciador_camera:
     def __init__(self) -> None:
         self.diretorio_cameras = os.path.dirname(os.path.abspath(__file__)) + "/cameras/" 
         self.nome_camera_atual = None 
-        self.camera_atual = None 
+        self.camera_atual = None
 
     def carregar_camera(self, camera = "camera01", ortogonalizar = True): # Responsavel por carregar as informaçoes da camera
         # Caso ortogonalizar seja verdadeiro a variavel camera_atual sera completa com (V, N, U) carregados e ortonormalizados  caso seja falsa ele apenas carrega da memoria  

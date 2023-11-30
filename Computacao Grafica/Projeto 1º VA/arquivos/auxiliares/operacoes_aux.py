@@ -42,3 +42,23 @@ def normalizador(vetor): # Normaliza um vetor
 def item_central(lista):
     indice_central = len(lista) // 2
     return lista[indice_central]
+
+def encontrar_centro(lista):
+    # Extrair o segundo valor de cada sublista
+    segundos_valores = [sublista[1] for sublista in lista]
+    ordenado = sorted(segundos_valores)
+    valor_meio = ordenado[len(ordenado) // 2]
+    
+    # Retornar o índice da sublista cujo segundo valor é o valor do meio
+    for i in range(len(lista)):
+        if lista[i][1] == valor_meio:
+            return i
+
+def item_central(lista, estado):
+    tamanho = len(lista)
+    if tamanho != 0:
+        for x in lista:
+            if x[1] == estado:
+                return x
+    else: return -1
+
