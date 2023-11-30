@@ -62,3 +62,8 @@ def item_central_D(lista, estado):
                 return x
     else: return -1
 
+def encontrar_lista_por_Y(lista, valor_procurado):
+    for sublista in lista:
+        if sublista[1] == valor_procurado:
+            return lista.index(sublista)
+    return None  # Retorna None se o valor não for encontrado

@@ -98,7 +98,6 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 ponto_d = operacoes_aux.item_central_D(linha_c_a, ponto_a_b_c[1])
             elif ponto_central == 2:
                 ponto_d = operacoes_aux.item_central_D(linha_a_b, ponto_a_b_c[1])
-            print(ponto_d, ponto_a_b_c)
             if ponto_d != -1:
 
                 listra_corte = self.linha(ponto_d, ponto_a_b_c)
@@ -109,17 +108,16 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                     if id_inicial != ponto_central:
                         ponto_referencia = lista_pontos[id_inicial]
                         if ponto_referencia[1] > ponto_a_b_c[1]:
-                            a_min = (ponto_a_b_c[1] - ponto_referencia[1]) / (ponto_a_b_c[0] - ponto_referencia[0])
-                            a_max = (ponto_d[1] - ponto_referencia[1]) / (ponto_d[0] - ponto_referencia[0])
                             
-                            x_min = int((1/a_min) + ponto_referencia[0])
-                            x_max = int((1/a_max) + ponto_referencia[0])
-                            print(a_min, a_max, x_min, x_max)
+                            linha_1 = self.linha(ponto_referencia, ponto_d)
+                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c)
+                            
                             y = ponto_referencia[1]
                             pontos_plot = []
+                            
                             while True:
-                                x_min = int((1/a_min) + x_min)
-                                x_max = int(((1/a_max) + x_max))
+                                x_min = operacoes_aux.encontrar_lista_por_Y(linha_1, y)
+                                x_max = operacoes_aux.encontrar_lista_por_Y(linha_2, y)
                                 linha = []
                                 for x in range(x_min, x_max):
                                     linha.append([x, y])
@@ -128,17 +126,15 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                                 if y == ponto_d[1]:
                                     break
                         else:
-                            a_min = (ponto_a_b_c[1] - ponto_referencia[1]) / (ponto_a_b_c[0] - ponto_referencia[0])
-                            a_max = (ponto_d[1] - ponto_referencia[1]) / (ponto_d[0] - ponto_referencia[0])
+                            linha_1 = self.linha(ponto_referencia, ponto_d)
+                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c)
                             
-                            x_min = int((1/a_min) + ponto_referencia[0])
-                            x_max = int((1/a_max) + ponto_referencia[0])
-                            print(a_min, a_max, x_min, x_max)
                             y = ponto_referencia[1]
                             pontos_plot = []
+                            
                             while True:
-                                x_min = int((1/a_min) + x_min)
-                                x_max = int((1/a_max) + x_max)
+                                x_min = operacoes_aux.encontrar_lista_por_Y(linha_1, y)
+                                x_max = operacoes_aux.encontrar_lista_por_Y(linha_2, y)
                                 linha = []
                                 for x in range(x_min, x_max):
                                     linha.append([x, y])
@@ -146,7 +142,6 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                                 pontos_plot.append(linha)
                                 if y == ponto_d[1]:
                                     break
-                        
                         self.preenchimento.append(linha)
 
 
