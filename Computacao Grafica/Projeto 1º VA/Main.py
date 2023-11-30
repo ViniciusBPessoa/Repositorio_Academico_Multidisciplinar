@@ -10,7 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from arquivos import gerenciador_arquivos # gerencia as malhas e as cameras
 from arquivos.auxiliares.aux_main import loader_malha, loader_normal_Hxy
 
-def plota_obj(janela, pontos, cor_ponto, faces, estado = 3):
+def plota_obj(janela, pontos, cor_ponto, faces, preenchimento, estado = 3):
     for ponto in pontos:
         pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
 
@@ -20,6 +20,12 @@ def plota_obj(janela, pontos, cor_ponto, faces, estado = 3):
             for aresta in face:
                 for ponto in aresta:
                     pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
+        
+        if estado == 3:
+            for linha in preenchimento:
+                if len(linha) != 0:
+                    for ponto in linha:
+                        pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
 
 pygame.init()
 
@@ -80,7 +86,7 @@ while executando:
             if evento.key == pygame.K_7:
                 webbrowser.open("https://www.youtube.com/watch?v=VBJvDgBZEi4")
 
-    plota_obj(tela, gerenciador_modelo.malha_perspectiva, (255,255,255), gerenciador_modelo.rasteiros, estado_plot)
+    plota_obj(tela, gerenciador_modelo.malha_perspectiva, (255,255,255), gerenciador_modelo.rasteiros, gerenciador_modelo.preenchimento, estado_plot)
 
     # Atualiza a tela
     pygame.display.update()

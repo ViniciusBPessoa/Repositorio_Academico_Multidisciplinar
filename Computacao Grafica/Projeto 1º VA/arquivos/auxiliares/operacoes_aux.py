@@ -54,7 +54,7 @@ def encontrar_centro(lista):
         if lista[i][1] == valor_meio:
             return i
 
-def item_central(lista, estado):
+def item_central_D(lista, estado):
     tamanho = len(lista)
     if tamanho != 0:
         for x in lista:

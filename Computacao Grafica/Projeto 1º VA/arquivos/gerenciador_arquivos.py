@@ -93,12 +93,12 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             ponto_a_b_c = lista_pontos[ponto_central]
 
             if ponto_central == 0:
-                ponto_d = operacoes_aux.item_central(linha_b_c, ponto_a_b_c[1])
+                ponto_d = operacoes_aux.item_central_D(linha_b_c, ponto_a_b_c[1])
             elif ponto_central == 1:
-                ponto_d = operacoes_aux.item_central(linha_c_a, ponto_a_b_c[1])
+                ponto_d = operacoes_aux.item_central_D(linha_c_a, ponto_a_b_c[1])
             elif ponto_central == 2:
-                ponto_d = operacoes_aux.item_central(linha_a_b, ponto_a_b_c[1])
-            
+                ponto_d = operacoes_aux.item_central_D(linha_a_b, ponto_a_b_c[1])
+            print(ponto_d, ponto_a_b_c)
             if ponto_d != -1:
 
                 listra_corte = self.linha(ponto_d, ponto_a_b_c)
@@ -118,8 +118,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                             y = ponto_referencia[1]
                             pontos_plot = []
                             while True:
-                                x_min = int((1/a_min) + ponto_referencia[0])
-                                x_max = int((1/a_max) + ponto_referencia[0])
+                                x_min = int((1/a_min) + x_min)
+                                x_max = int(((1/a_max) + x_max))
                                 linha = []
                                 for x in range(x_min, x_max):
                                     linha.append([x, y])
@@ -137,8 +137,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                             y = ponto_referencia[1]
                             pontos_plot = []
                             while True:
-                                x_min = int((1/a_min) + ponto_referencia[0])
-                                x_max = int((1/a_max) + ponto_referencia[0])
+                                x_min = int((1/a_min) + x_min)
+                                x_max = int((1/a_max) + x_max)
                                 linha = []
                                 for x in range(x_min, x_max):
                                     linha.append([x, y])
@@ -173,7 +173,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         y = y1
         
         while True:
-            
+            lista.append((x, y))
             if x == x2 and y == y2:
                 break
             
@@ -186,8 +186,6 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             if erro2 < deltax:
                 erro += deltax
                 y += sy
-            
-            lista.append((x, y))
         
         return lista
 
