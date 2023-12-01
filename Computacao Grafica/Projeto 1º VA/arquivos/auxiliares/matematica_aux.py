@@ -29,8 +29,8 @@ def multiplicar_matrizes(matriz1, matriz2):
 
     return resultado
 
-def elevador_matriz(lista, expoente):
+def elevador_matriz(lista, expoente): # eleva uma matriz ao expoente
     return [item ** expoente for item in lista]
 
-def dividir_matriz(lista, divisor):
+def dividir_matriz(lista, divisor): # divide cada item de uma matriz por divisor
     return [item / divisor for item in lista]
