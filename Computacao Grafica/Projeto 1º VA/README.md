@@ -59,5 +59,3 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir um PR.
 
 Este programa foi desenvolvido como parte de um projeto educacional para visualização interativa de modelos de malha 3D utilizando Pygame.
 ```
-
-Este é um exemplo de conteúdo para um README.md que fornece informações sobre o que o programa faz, como usá-lo, controles do teclado, requisitos e links adicionais para documentação, tutoriais e recursos relevantes. Certifique-se de substituir `nome_do_arquivo.py` pelo nome real do seu arquivo Python contendo o código.
