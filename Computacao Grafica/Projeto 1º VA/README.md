@@ -1,4 +1,3 @@
-```markdown
 # Visualizador 3D Interativo com Pygame
 
 Este é um programa em Python que utiliza o Pygame para visualização interativa de objetos 3D. Ele permite carregar modelos de malha 3D, exibir pontos, linhas e conteúdo preenchido, além de oferecer funcionalidades como recarregar malhas, alternar entre modos de exibição e abrir links externos.
