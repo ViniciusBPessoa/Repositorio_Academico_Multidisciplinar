@@ -1,22 +1,64 @@
-# Repositório Acadêmico Multidisciplina
+```markdown
+# Visualizador 3D Interativo com Pygame
 
-Bem-vindo ao Repositório Acadêmico Multidisciplinar! Este é um espaço exclusivo dedicado à exposição de conhecimentos em diversas disciplinas universitárias. Este repositório é apenas para leitura, com modificações permitidas somente pelo autor original para preservar a integridade dos trabalhos e materiais aqui disponibilizados.
+Este é um programa em Python que utiliza o Pygame para visualização interativa de objetos 3D. Ele permite carregar modelos de malha 3D, exibir pontos, linhas e conteúdo preenchido, além de oferecer funcionalidades como recarregar malhas, alternar entre modos de exibição e abrir links externos.
 
-## Objetivo do Repositório
+## Funcionalidades Principais
 
-O objetivo deste repositório é fornecer uma biblioteca estática de recursos educacionais, permitindo que estudantes e entusiastas acessem trabalhos e projetos em áreas como Arquitetura de Computadores, Redes Neurais, Sistemas Operacionais e outras disciplinas universitárias.
+- Carregar e exibir modelos de malha 3D.
+- Interagir com a visualização usando teclas do teclado.
+- Alternar entre diferentes modos de exibição (pontos, linhas e conteúdo preenchido).
+- Recarregar a malha atual.
+- Abrir links externos para referências adicionais.
 
-## Conteúdo Disponível
+## Requisitos
 
-- **`Arquitetura_de_Computadores/`**: Contém trabalhos e atividades relacionados à disciplina de Arquitetura de Computadores.
-- **`Redes Neurais/`**: Inclui documentos e projetos sobre Redes Neurais, destacando aplicações e desenvolvimentos recentes.
-- **`Sistemas Operacionais/`**: Documentos e códigos vinculados à disciplina de Sistemas Operacionais, incluindo trabalhos sobre compiladores.
-- **`Outras Disciplinas/`**: Um espaço dedicado a diversas outras disciplinas universitárias, onde você pode explorar materiais educacionais variados.
+- Python 3.x
+- Pygame
 
-## Instruções
+## Como Usar
 
-- **Leitura e Aprendizado**: Fique à vontade para explorar os trabalhos disponíveis em cada pasta. Utilize este repositório como uma fonte de aprendizado e inspiração para seus próprios estudos.
+Certifique-se de ter o Python 3.x instalado. Instale o Pygame utilizando:
 
-- **Sem Modificações**: Por favor, note que este repositório é somente leitura. Modificações e contribuições não são permitidas por terceiros para manter a integridade dos materiais.
+```bash
+pip install pygame
+```
 
-Agradecemos por utilizar este repositório como uma ferramenta de aprendizado. Se você tiver alguma dúvida ou precisar de assistência, sinta-se à vontade para entrar em contato com o autor original do repositório.
+Execute o programa com o Python:
+
+```bash
+python nome_do_arquivo.py
+```
+
+### Controles do Teclado
+
+- **R**: Recarregar a malha atual.
+- **T**: Digitar o nome do arquivo da malha para carregar um novo.
+- **Espaço**: Exibir todos os valores da malha.
+- **Esc**: Fechar o programa.
+- **1, 2, 3**: Alternar entre diferentes modos de exibição.
+- **7**: Abrir um link específico.
+
+## Observações
+
+Certifique-se de ter as malhas 3D disponíveis na pasta `arquivos` para carregá-las corretamente.
+
+## Contribuições
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir um PR.
+
+## Recursos Adicionais
+
+- [Documentação do Pygame](https://www.pygame.org/docs/)
+- [Tutorial de Introdução ao Pygame](https://www.pygame.org/wiki/tutorials)
+
+## Referências
+
+- [Tutorial de Desenvolvimento de Jogos com Pygame](https://www.youtube.com/watch?v=VBJvDgBZEi4)
+
+---
+
+Este programa foi desenvolvido como parte de um projeto educacional para visualização interativa de modelos de malha 3D utilizando Pygame.
+```
+
+Este é um exemplo de conteúdo para um README.md que fornece informações sobre o que o programa faz, como usá-lo, controles do teclado, requisitos e links adicionais para documentação, tutoriais e recursos relevantes. Certifique-se de substituir `nome_do_arquivo.py` pelo nome real do seu arquivo Python contendo o código.
