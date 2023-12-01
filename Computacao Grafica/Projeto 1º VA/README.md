@@ -26,7 +26,7 @@ pip install pygame
 Execute o programa com o Python:
 
 ```bash
-python nome_do_arquivo.py
+Main.py
 ```
 
 ### Controles do Teclado
