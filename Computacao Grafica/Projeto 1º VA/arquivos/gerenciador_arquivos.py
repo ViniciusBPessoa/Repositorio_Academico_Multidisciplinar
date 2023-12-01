@@ -61,7 +61,6 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                        int(resolucao[1] - (aux[1]+1 / 2) * resolucao[1] + 0.5)]
 
                 lista_projetada.append(aux)
-            print(lista_projetada)
             self.malha_perspectiva = lista_projetada
             self.rasteirizacao()
         else:
@@ -71,7 +70,6 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         faces = self.malha_atual["faces"]
         self.rasteiros = []
         self.preenchimento = []
-        print(faces)
         for face in faces:
 
             a = self.malha_perspectiva[face[0] - 1]
@@ -114,34 +112,46 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                             
                             y = ponto_referencia[1]
                             pontos_plot = []
+                            linha = []
                             
                             while True:
-                                x_min = operacoes_aux.encontrar_lista_por_Y(linha_1, y)
-                                x_max = operacoes_aux.encontrar_lista_por_Y(linha_2, y)
-                                linha = []
-                                for x in range(x_min, x_max):
+                                if y == ponto_d[1]:
+                                    break
+                                x_min = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)][0]
+                                x_max = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)][0]
+                                
+                                if x_min > x_max:
+                                    aux = x_min
+                                    x_min = x_max
+                                    x_max = aux
+                                
+                                for x in range(x_min, x_max + 1):
                                     linha.append([x, y])
                                 y -= 1
                                 pontos_plot.append(linha)
-                                if y == ponto_d[1]:
-                                    break
                         else:
                             linha_1 = self.linha(ponto_referencia, ponto_d)
                             linha_2 = self.linha(ponto_referencia, ponto_a_b_c)
                             
                             y = ponto_referencia[1]
                             pontos_plot = []
+                            linha = []
                             
                             while True:
-                                x_min = operacoes_aux.encontrar_lista_por_Y(linha_1, y)
-                                x_max = operacoes_aux.encontrar_lista_por_Y(linha_2, y)
-                                linha = []
-                                for x in range(x_min, x_max):
+                                if y == ponto_d[1]:
+                                    break
+                                x_min = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)][0]
+                                x_max = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)][0]
+                                
+                                if x_min > x_max:
+                                    aux = x_min
+                                    x_min = x_max
+                                    x_max = aux
+
+                                for x in range(x_min, x_max + 1):
                                     linha.append([x, y])
                                 y += 1
                                 pontos_plot.append(linha)
-                                if y == ponto_d[1]:
-                                    break
                         self.preenchimento.append(linha)
 
 
