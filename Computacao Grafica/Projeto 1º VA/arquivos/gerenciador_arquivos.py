@@ -213,7 +213,6 @@ class Gerenciador_camera:
     def carregar_camera(self, camera = "camera01", ortogonalizar = True): # Responsavel por carregar as informaçoes da camera
         # Caso ortogonalizar seja verdadeiro a variavel camera_atual sera completa com (V, N, U) carregados e ortonormalizados  caso seja falsa ele apenas carrega da memoria  
 
-
         arquivo_camera = self.diretorio_cameras + f"{camera}.txt"
 
         try:  # verifica se o arquivo esta ou não na memoria
@@ -252,7 +251,6 @@ class Gerenciador_camera:
             for chave, valor in self.camera_atual.items():
                 print(f'{chave}: {valor}')
 
-
 if __name__ == "__main__":
     gerenciador_cameras = Gerenciador_camera()
     nome_arquivo_camera = "camera01"  # Substitua pelo nome do arquivo da câmera desejado
@@ -262,5 +260,4 @@ if __name__ == "__main__":
     parametros_camera = gerenciador_cameras.carregar_camera(nome_arquivo_camera)
     gerenciador_cameras.exibir_camera()
     print(gerenciador_cameras.get_Matrix_mudanca())
-
     
