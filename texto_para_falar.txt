@@ -1,0 +1,27 @@
+A condução autônoma é um ambiente multiagente em que o veículo anfitrião deve aplicar 
+habilidades sofisticadas de negociação com outros usuários da estrada ao ultrapassar, ceder, 
+fazer cruzamentos, virar à esquerda e à direita e ao avançar em estradas urbanas não 
+estruturadas. Dado que existem muitos cenários possíveis, abordar manualmente todos os 
+casos possíveis resultará provavelmente numa política demasiado simplista. Além disso, é 
+necessário equilibrar o comportamento inesperado de outros condutores/pedestres e, ao mesmo 
+tempo, não ser demasiado defensivo para que o fluxo normal do tráfego seja mantido.
+Neste artigo, aplicamos a aprendizagem por reforço profundo ao problema de formação de 
+estratégias de condução de longo prazo. Observamos que existem dois grandes desafios que 
+tornam a condução autônoma diferente de outras tarefas robóticas. Em primeiro lugar, está a 
+necessidade de garantir a segurança funcional – algo com que o aprendizado de máquina tem 
+dificuldade, visto que o desempenho é otimizado no nível de uma expectativa em muitas 
+instâncias. Em segundo lugar, o modelo do Processo de Decisão de Markov frequentemente 
+utilizado em robótica é problemático no nosso caso devido ao comportamento imprevisível de 
+outros agentes neste cenário multiagente. Damos três contribuições em nosso trabalho. Primeiro, 
+mostramos como as iterações do gradiente de política podem ser usadas, e a variância da 
+estimativa do gradiente usando a subida estocástica do gradiente pode ser minimizada, sem suposições Markovianas.
+Em segundo lugar, decompomos o problema numa composição de uma Política para Desejos 
+(que deve ser aprendida) e num planeamento de trajetória com restrições rígidas (que não é 
+aprendido). O objetivo do Desires é permitir o conforto ao dirigir, enquanto restrições rígidas 
+garantem a segurança ao dirigir. Terceiro, introduzimos uma abstração temporal hierárquica que 
+chamamos de “Gráfico de Opções” com um mecanismo de controle que reduz significativamente 
+o horizonte efetivo e, assim, reduzindo ainda mais a variância da estimativa do gradiente. O 
+Option Graph desempenha um papel semelhante à “previsão estruturada” na aprendizagem 
+supervisionada, reduzindo assim a complexidade da amostra, ao mesmo tempo que desempenha 
+um papel semelhante aos mecanismos de controle LSTM usados em redes profundas 
+supervisionadas.
