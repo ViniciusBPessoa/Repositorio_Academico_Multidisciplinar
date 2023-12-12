@@ -6,3 +6,4 @@ def loader_malha(gerenciador_modelo, gerenciador_camera, modelo, normal_Hxy, res
 
 def loader_normal_Hxy(gerenciador_camera): # carrega os valores para rasteirização (perspectiva)
     return [gerenciador_camera.camera_atual["d"][0] / gerenciador_camera.camera_atual["Hx"][0], gerenciador_camera.camera_atual["d"][0] / gerenciador_camera.camera_atual["Hy"][0]]
+

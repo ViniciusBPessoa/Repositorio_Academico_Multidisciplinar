@@ -57,8 +57,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 # perpectiva
                 aux = [normal_hx_hy[0] * (aux[0][0]/aux[2][0]), normal_hx_hy[1] * (aux[1][0]/aux[2][0])] # adiciona perspectivaem x e remove o eixo Z
 
-                aux = [ int(((aux[0]+1) / 2) * resolucao[0] + 0.5), 
-                       int(resolucao[1] - (aux[1]+1 / 2) * resolucao[1] + 0.5)] # adiciona perspectivaem y e remove o eixo Z
+                aux = [ int(((aux[0]+1) / 2) * (resolucao[0] / 2) + 0.5), 
+                       int((resolucao[1] / 2) - (aux[1]+1 / 2) * (resolucao[1] / 2)+ 0.5)] # adiciona perspectivaem y e remove o eixo Z
 
                 lista_projetada.append(aux)
             self.malha_perspectiva = lista_projetada
