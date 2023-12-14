@@ -1,5 +1,7 @@
 import pyttsx3
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def texto_para_voz(texto, velocidade):
     engine = pyttsx3.init()
