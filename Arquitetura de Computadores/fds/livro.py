@@ -7,4 +7,4 @@ class Livro():
         self.Historico_venda = [[Nome_vendedor, data_hora, valor, qtd], [Nome_vendedor, data_hora, valor, qtd],[Nome_vendedor, data_hora, valor, qtd]]
 
     def fds():
-        pass
+        return 1
