@@ -12,7 +12,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
         self.malha_perspectiva = None # essa é a malha final (perpectiva e bem formada)
         self.malha_atual = None # mantem a malha atravez de um dicionario
-        self.rasteiros = None
+        self.rasteiros = None # total rasteiros
+        self.preenchimento = None # todas as linhas que preenchem o modelo
 
     def carregar_malha(self, malha = "piramide"): # carrega a malha
         arquivo_malha = self.diretorio_modelos + f"{malha}.byu" # localiza o arquivo
@@ -54,51 +55,119 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 aux = matematica_aux.multiplicar_matrizes(matriz_transfer, ponto) # tudo agora esta na base correta (resta perspectiva)
 
                 # perpectiva
-                aux = [normal_hx_hy[0] * (aux[0][0]/aux[2][0]), normal_hx_hy[1] * (aux[1][0]/aux[2][0])] # adiciona perspectiva e remove o eixo Z
+                aux = [normal_hx_hy[0] * (aux[0][0]/aux[2][0]), normal_hx_hy[1] * (aux[1][0]/aux[2][0])] # adiciona perspectivaem x e remove o eixo Z
 
-                aux = [ int(((aux[0]+1) / 2) * resolucao[0] + 0.5), 
-                       int(resolucao[1] - (aux[1]+1 / 2) * resolucao[1] + 0.5)]
+                aux = [ int(((aux[0]+1) / 2) * (resolucao[0] / 2) + 0.5), 
+                       int((resolucao[1] / 2) - (aux[1]+1 / 2) * (resolucao[1] / 2)+ 0.5)] # adiciona perspectivaem y e remove o eixo Z
 
                 lista_projetada.append(aux)
-            print(lista_projetada)
             self.malha_perspectiva = lista_projetada
-            self.rasteirizacao()
+            self.rasteirizacao() # já jera a rasterização
         else:
             return -1
         
-    def rasteirizacao(self):
-        faces = self.malha_atual["faces"]
-        self.rasteiros = []
-        print(faces)
-        for face in faces:
-            linhas = []
-
-            linha = self.linha(self.malha_perspectiva[face[1] - 1], self.malha_perspectiva[face[2] - 1])
-            linha_oposta = linha
-            linhas.append(linha)
-            linha = self.linha(self.malha_perspectiva[face[2] - 1], self.malha_perspectiva[face[0] - 1])
-            linhas.append(linha)
+    def rasteirizacao(self): # rasteriza a malha
+        faces = self.malha_atual["faces"] # carrega as faces da malha
+        self.rasteiros = [] # armazena as linhas
+        self.preenchimento = [] # armazena o conteudo dos triangulos
+        for face in faces: # loop de faces
             
-            if len(linha_oposta) != 0:
-                lista_rastera_interna = []
-                ponto_d = operacoes_aux.item_central(linha_oposta)
-                ponto_b = self.malha_perspectiva[face[1] - 1]
-                linha = self.linha(self.malha_perspectiva[face[0] - 1], ponto_d)
-                linhas.append(linha)
+            # coletando os pontos
+            a = self.malha_perspectiva[face[0] - 1]
+            b = self.malha_perspectiva[face[1] - 1]
+            c = self.malha_perspectiva[face[2] - 1]
+
+            # gerando as linhas de cada face
+            linhas = []
+            linha_a_b = self.linha(a, b)
+            linhas.append(linha_a_b)
+
+            linha_b_c = self.linha(b, c)
+            linhas.append(linha_b_c)
+
+            linha_c_a = self.linha(c, a)
+            linhas.append(linha_c_a)
+
+            lista_pontos = [a,b,c] # armazena os tres pontos
+            ponto_central = operacoes_aux.encontrar_centro(lista_pontos) # devolve o ponto no centro em y
+            ponto_a_b_c = lista_pontos[ponto_central] # ponto central pode ser a, b, c tanto faz
+
+            # gera o ponto D para cortar o triangulo
+            if ponto_central == 0:
+                ponto_d = operacoes_aux.item_central_D(linha_b_c, ponto_a_b_c[1])
+            elif ponto_central == 1:
+                ponto_d = operacoes_aux.item_central_D(linha_c_a, ponto_a_b_c[1])
+            elif ponto_central == 2:
+                ponto_d = operacoes_aux.item_central_D(linha_a_b, ponto_a_b_c[1])
+            if ponto_d != -1:
+                
+                #Gera a linha que corta o triangulo para rasterizar o sentro
+                listra_corte = self.linha(ponto_d, ponto_a_b_c)
+                linhas.append(listra_corte)
+                self.rasteiros.append(linhas) # adiciona todas as linhas a lista geral
+
+                for id_inicial in range(len(lista_pontos)): # Gera o conteudo
+                    if id_inicial != ponto_central: # verificação para impedir que o pondo gerador de D seja levado em consideração
+                        ponto_referencia = lista_pontos[id_inicial] # um dos dois casos ou o ponto acima ou o ponto abaixo
+                        if ponto_referencia[1] > ponto_a_b_c[1]: # ponto acima
+                            
+                            linha_1 = self.linha(ponto_referencia, ponto_d) # gera uma linha de apoio entre o ponto d e a referencia 
+                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c) # O mesmo
+                            
+                            y = ponto_referencia[1] # y = o y da referencia 
+                            pontos_plot = [] # lista com listas de pontos 
+                            linha = [] # lista de po9nto para cada linha
+                            
+                            while True: # loop principal
+                                if y == ponto_d[1]: # trava a rasteirização quando acha o ponto D
+                                    break
+                                x_min = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)][0] # calcula x_min e x_max
+                                x_max = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)][0]
+                                
+                                if x_min > x_max: # verifica o lado para o qual o triangulo esta voltado e recarrega os valores de x caso nescessario
+                                    aux = x_min
+                                    x_min = x_max
+                                    x_max = aux
+                                
+                                for x in range(x_min, x_max + 1): # adionana cada ponto da linha
+                                    linha.append([x, y])
+                                y -= 1 # caso o ponto seja aciam y -= 1
+                                pontos_plot.append(linha)
+                        else: # ponto abaixo (restante igual o anterior)
+                            linha_1 = self.linha(ponto_referencia, ponto_d)
+                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c)
+                            
+                            y = ponto_referencia[1]
+                            pontos_plot = []
+                            linha = []
+                            
+                            while True:
+                                if y == ponto_d[1]:
+                                    break
+                                x_min = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)][0]
+                                x_max = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)][0]
+                                
+                                if x_min > x_max:
+                                    aux = x_min
+                                    x_min = x_max
+                                    x_max = aux
+
+                                for x in range(x_min, x_max + 1):
+                                    linha.append([x, y])
+                                y += 1 # Contrario do caso cima
+                                pontos_plot.append(linha)
+                        self.preenchimento.append(linha)
 
 
-
-
-            self.rasteiros.append(linhas)
-    def linha(self, ponto1, ponto2):
-        lista = []
-        x1, y1 = ponto1
+    def linha(self, ponto1, ponto2): # gera uma linha
+        lista = [] # armazerna a linha
+        x1, y1 = ponto1 # carrega os pontos
         x2, y2 = ponto2
         
-        deltax = abs(x2 - x1)
+        deltax = abs(x2 - x1) # valor absoluto
         deltay = abs(y2 - y1)
         
-        if x1 < x2:
+        if x1 < x2: # verifica para qual lado a linha deve ir
             sx = 1
         else:
             sx = -1
@@ -107,27 +176,25 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         else:
             sy = -1
         
-        erro = deltax - deltay
+        erro = deltax - deltay # gera o erro
         
-        x = x1
+        x = x1 # x e y a seram adicionados
         y = y1
         
-        while True:
-            
-            if x == x2 and y == y2:
+        while True: # loop que cria a linha
+            lista.append((x, y)) # adiciona o ponto
+            if x == x2 and y == y2: # trava a linha no ponto final
                 break
             
-            erro2 = 2 * erro
+            erro2 = 2 * erro # calcula o erro
 
-            if erro2 > -deltay:
+            if erro2 > -deltay: # verifica o erro para alterar x e y
                 erro -= deltay
                 x += sx
             
             if erro2 < deltax:
                 erro += deltax
                 y += sy
-            
-            lista.append((x, y))
         
         return lista
 
@@ -145,11 +212,10 @@ class Gerenciador_camera:
     def __init__(self) -> None:
         self.diretorio_cameras = os.path.dirname(os.path.abspath(__file__)) + "/cameras/" 
         self.nome_camera_atual = None 
-        self.camera_atual = None 
+        self.camera_atual = None
 
     def carregar_camera(self, camera = "camera01", ortogonalizar = True): # Responsavel por carregar as informaçoes da camera
         # Caso ortogonalizar seja verdadeiro a variavel camera_atual sera completa com (V, N, U) carregados e ortonormalizados  caso seja falsa ele apenas carrega da memoria  
-
 
         arquivo_camera = self.diretorio_cameras + f"{camera}.txt"
 
@@ -188,16 +254,4 @@ class Gerenciador_camera:
         if self.camera_atual != None:
             for chave, valor in self.camera_atual.items():
                 print(f'{chave}: {valor}')
-
-
-if __name__ == "__main__":
-    gerenciador_cameras = Gerenciador_camera()
-    nome_arquivo_camera = "camera01"  # Substitua pelo nome do arquivo da câmera desejado
-    malha = Gerenciador_Modelo()
-    malha.carregar_malha()
-    print(malha.malha_atual)
-    parametros_camera = gerenciador_cameras.carregar_camera(nome_arquivo_camera)
-    gerenciador_cameras.exibir_camera()
-    print(gerenciador_cameras.get_Matrix_mudanca())
-
     
