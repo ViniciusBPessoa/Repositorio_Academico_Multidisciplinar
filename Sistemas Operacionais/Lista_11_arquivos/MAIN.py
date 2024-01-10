@@ -4,6 +4,10 @@ from tipos_arquivos.diretorio import Diretorio
 import Ajudadores.controlador as control
 import memoria.memoria as memoria
 from os import system
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
 lista_menu_principal = ["Listar diretorio", "Entrar em diretorio", "Voltar para o diretorio anterior", 
