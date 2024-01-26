@@ -1,59 +1,34 @@
-import faker
-import random
+import pygame
+from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *  # Adicione esta linha
 
-class pessoa:
-    def __init__(self, nome) -> None:
-        self.nome = nome
-        self.lado = None
-        self.vitorias = 0
-        
+def draw_triangle():
+    glBegin(GL_TRIANGLES)
+    glVertex3f(-1.0, -1.0, 0.0)
+    glVertex3f(1.0, -1.0, 0.0)
+    glVertex3f(0.0, 1.0, 0.0)
+    glEnd()
 
-def gerar_nome():
-    fake = faker.Faker()
-    nome = fake.name()
-    print(nome)
-    return nome
+def main():
+    pygame.init()
+    display = (800, 600)
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+    glTranslatef(0.0, 0.0, -5)
 
-def retorna_zero_ou_um():
-    return random.randint(0, 1)
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
 
+        glRotatef(1, 3, 1, 1)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        draw_triangle()
+        pygame.display.flip()
+        pygame.time.wait(10)
 
-play = []
-num_play = 1000
-rodadas = 0
-
-for x in range(num_play):
-    play.append(pessoa(gerar_nome()))
-    
-print([x.nome for x in play])
-    
-def jogo_moeda(jogadores):
-    random.shuffle(jogadores)
-    jogadores[0].lado = 0
-    jogadores[1].lado = 1
-    
-    resultado = retorna_zero_ou_um()
-    
-    jogadores[resultado].vitorias += 1
-    return jogadores[resultado]
-
-while len(play) != 1:
-    
-    play2 = []
-    random.shuffle(play)
-    
-    if len(play) % 2 == 0:
-        for x in range(0, len(play), 2):
-            play2.append(jogo_moeda([play[x], play[x+1]]))
-    else:
-        play2.append(play[-1])
-        play.pop(-1)
-        for x in range(0, len(play), 2):
-            play2.append(jogo_moeda([play[x], play[x+1]]))
-    
-    rodadas += 1
-    play = play2[:]
-    
-
-print(play[0].nome, play[0].vitorias)
-print("Rodadas: ", rodadas)
+if __name__ == "__main__":
+    main()

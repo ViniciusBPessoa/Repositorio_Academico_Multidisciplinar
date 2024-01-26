@@ -42,7 +42,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         except FileNotFoundError:
             return -1 # caso o retorno seja -1 o modelo não foi carregado com sucesso
         
-    def projecao_malha(self, matriz_transfer, foco, normal_hx_hy, resolucao):
+    def projecao_malha(self, matriz_transfer, foco, distancia, normal_hx_hy, resolucao):
         lista_projetada = [] # carrega a lista com os vetores ate o fim (com as transiçoes corretas e a perspectiva)
         
         if self.malha_atual != None: # caso a malha ainda não esteja carregada 0
@@ -53,12 +53,16 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 ponto = matematica_aux.subtrair_listas(ponto, foco) # P - C
                 ponto = [[ponto[0]], [ponto[1]], [ponto[2]]] # passa o ponto para uma matris de 1 coluna
                 aux = matematica_aux.multiplicar_matrizes(matriz_transfer, ponto) # tudo agora esta na base correta (resta perspectiva)
-
+                
+                aux[0][0] = distancia[0] * (aux[0][0] / aux[2][0])
+                aux[1][0] = distancia[0] * (aux[1][0] / aux[2][0])
                 # perpectiva
-                aux = [normal_hx_hy[0] * (aux[0][0]/aux[2][0]), normal_hx_hy[1] * (aux[1][0]/aux[2][0])] # adiciona perspectivaem x e remove o eixo Z
 
-                aux = [ int(((aux[0]+1) / 2) * (resolucao[0] / 2) + 0.5), 
-                       int((resolucao[1] / 2) - (aux[1]+1 / 2) * (resolucao[1] / 2)+ 0.5)] # adiciona perspectivaem y e remove o eixo Z
+                
+                aux = [(aux[0][0]/normal_hx_hy[0]), (aux[1][0]/normal_hx_hy[1])] # adiciona perspectivaem x e remove o eixo Z
+                
+                aux = [ int(((aux[0]+1) / 2) * resolucao[0] + 0.5), 
+                       int(resolucao[1] - ((aux[1]+1) / 2) * resolucao[1]  + 0.5)] # adiciona perspectivaem y e remove o eixo Z
 
                 lista_projetada.append(aux)
             self.malha_perspectiva = lista_projetada
