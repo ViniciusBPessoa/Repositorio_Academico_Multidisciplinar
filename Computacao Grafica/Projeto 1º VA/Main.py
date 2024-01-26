@@ -28,7 +28,7 @@ def plota_obj(janela, pontos, cor_ponto, faces, preenchimento, estado = 3):  # f
 
 pygame.init() # inicializador do pygame 
 
-resolu = [1920, 1080] # define a largura e altura da tela respectivamente
+resolu = [720, 720] # define a largura e altura da tela respectivamente
 tela = pygame.display.set_mode((resolu[0], resolu[1])) # cria a tela
 pygame.display.set_caption('3D Objects') # da nome a tela
 
