@@ -1,37 +1,31 @@
-from google_images_search import GoogleImagesSearch
+from OpenGL.GL import *
+from OpenGL.GLUT import *
 
-def download_images(query, limit):
-    # Configure API key and cx (context) to use Google Search API
-    api_key = 'AIzaSyB_YujZhK9XjedhFd4_rTYCmlMCJcAflFI'
-    cx = 'e40530e8ad903413c'
+# Função de renderização
+def draw_square():
+    glBegin(GL_QUADS)
+    glVertex2f(-0.5, -0.5)  # Canto inferior esquerdo
+    glVertex2f(0.5, -0.5)   # Canto inferior direito
+    glVertex2f(0.5, 0.5)    # Canto superior direito
+    glVertex2f(-0.5, 0.5)   # Canto superior esquerdo
+    glEnd()
+    glFlush()
 
-    # Create an instance of GoogleImagesSearch with your credentials
-    gis = GoogleImagesSearch(api_key, cx)
+# Função de inicialização
+def initialize():
+    glClearColor(0.0, 0.0, 0.0, 1.0)  # Define a cor de fundo para preto
+    gluOrtho2D(-1.0, 1.0, -1.0, 1.0)   # Define as coordenadas da janela de visualização
 
-    # Set search parameters
-    search_params = {
-        'q': query,
-        'num': limit,
-        'safe': 'high',
-    }
+# Função principal
+def main():
+    glutInit(sys.argv)
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
+    glutInitWindowSize(400, 400)
+    glutCreateWindow("Quadrado em OpenGL")
+    glutDisplayFunc(draw_square)
+    initialize()
+    glutMainLoop()
 
-    # Perform the search
-    gis.search(search_params=search_params)
-
-    # Get the URLs of the images found
-    image_urls = []
-    for image in gis.results():
-        image_urls.append(image.url)
-
-    # Download the images to a local directory
-    path_to_save = 'path/to/save/images'  # Set the path to the directory where you want to save the images
-    gis.download(image_urls, path_to_save)
-
-    # Print the URLs of the images found
-    for image_url in image_urls:
-        print(image_url)
-
-# Example usage
-search_query = "cachorro fofo"
-images_limit = 5
-download_images(search_query, images_limit)
+# Chama a função principal
+if __name__ == "__main__":
+    main()
