@@ -2,11 +2,10 @@ import pygame
 import sys
 from os import path, getcwd
 
-# Obtém o caminho do diretório do script atual
-script_dir = getcwd()
+from os import path
+sys.path.append( path.dirname( path.dirname( path.abspath("__main__") ) ) )
 
-# Adiciona o diretório pai ao caminho do sistema
-sys.path.append(path.dirname(script_dir))
+
 import time
 from datetime import datetime
 import collections
@@ -143,6 +142,7 @@ def DQN_TRAIN(env, env_name, gamma, qnet, qnet_lr, target_qnet, target_update_fr
             if step > NUM_STAPS:
                 print(f"Solved in {step} steps with mean reward {mean_reward:.3f}")
                 filename = env_name + "-" + start_time_str + ".dat"
+                torch.save(qnet.state_dict(), filename)
                 print(f"Model saved as {filename}")
                 break
 
@@ -168,7 +168,7 @@ ATARI_ENV_NAME = "ALE/SpaceInvaders-v5"
 
 # Recompensa alvo; no Pong, esta é a diferença de pontos do player para a "cpu", sendo +21.0 o máximo e -21.0 o mínimo
 # Tente com algum valor negativo (e.g. -15.0) para um treinamento mais rápido, ou algum valor positivo (+15.0) para ver o agent ganhar da "cpu"
-NUM_STAPS = 10000 #0.0
+NUM_STAPS = 1000 #0.0
 
 # Parâmetros do DQN
 GAMMA = 0.99
