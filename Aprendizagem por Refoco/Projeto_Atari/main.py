@@ -1,9 +1,8 @@
 import pygame
 import sys
-from os import path, getcwd
 
-from os import path
-sys.path.append( path.dirname( path.dirname( path.abspath("__main__") ) ) )
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
 import time
@@ -14,7 +13,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
-
 
 import matplotlib.pyplot as plt
 from modelos import dqn_models
@@ -141,7 +139,11 @@ def DQN_TRAIN(env, env_name, gamma, qnet, qnet_lr, target_qnet, target_update_fr
             # Testa se "resolveu" o ambiente
             if step > NUM_STAPS:
                 print(f"Solved in {step} steps with mean reward {mean_reward:.3f}")
-                filename = env_name + "-" + start_time_str + ".dat"
+                # Verifica se o diretório existe e, se não, cria-o
+                model_dir = 'models/' + env_name
+                if not os.path.exists(model_dir):
+                    os.makedirs(model_dir)
+                filename = model_dir + "-" + start_time_str + ".dat"
                 torch.save(qnet.state_dict(), filename)
                 print(f"Model saved as {filename}")
                 break
@@ -168,7 +170,7 @@ ATARI_ENV_NAME = "ALE/SpaceInvaders-v5"
 
 # Recompensa alvo; no Pong, esta é a diferença de pontos do player para a "cpu", sendo +21.0 o máximo e -21.0 o mínimo
 # Tente com algum valor negativo (e.g. -15.0) para um treinamento mais rápido, ou algum valor positivo (+15.0) para ver o agent ganhar da "cpu"
-NUM_STAPS = 1000 #0.0
+NUM_STAPS = 100_000 #0.0
 
 # Parâmetros do DQN
 GAMMA = 0.99
