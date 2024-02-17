@@ -1,6 +1,11 @@
 # Baseada na minha versão (Pablo)
 import gymnasium as gym
 
+from base64 import b64encode
+from IPython.display import HTML, display, clear_output
+
+from pathlib import Path
+
 def record_video_q_neuralnet(env_name, qnet, episodes=3, folder='videos/', prefix='rl-video', epsilon=0.0):
     """
     Grava um vídeo a partir de uma política epsilon-greedy definida pela 'qtable' e pelo valor de 'epsilon'.
@@ -31,3 +36,4 @@ def record_video_q_neuralnet(env_name, qnet, episodes=3, folder='videos/', prefi
         print(f"Episode {epi}: {num_steps} steps / return {epi_reward:.2f}")
     rec_env.close()
     env.close()
+    
