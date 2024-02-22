@@ -10,10 +10,13 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
     def __init__(self):
         self.diretorio_modelos = os.path.dirname(os.path.abspath(__file__)) + "/modelos/" # Para executar sempre (Carrega a devida localização)
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
-        self.malha_perspectiva = None # essa é a malha final (perpectiva e bem formada)
         self.malha_atual = None # mantem a malha atravez de um dicionario
+
+        self.malha_perspectiva = None # essa é a malha final (perpectiva e bem formada)
         self.rasteiros = None # total rasteiros
         self.preenchimento = None # todas as linhas que preenchem o modelo
+
+        self.Z_buffer = []
 
     def carregar_malha(self, malha = "piramide"): # carrega a malha
         arquivo_malha = self.diretorio_modelos + f"{malha}.byu" # localiza o arquivo
@@ -44,7 +47,9 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         
     def projecao_malha(self, matriz_transfer, foco, distancia, normal_hx_hy, resolucao):
         lista_projetada = [] # carrega a lista com os vetores ate o fim (com as transiçoes corretas e a perspectiva)
-        
+        self.Z_buffer = [[-1] * resolucao[1] for _ in range(resolucao[0])] # preenche meu zbuffer com os valores que não serão dezenhados
+
+
         if self.malha_atual != None: # caso a malha ainda não esteja carregada 0
             lista_coordenadas = self.malha_atual["vertices"]
 
@@ -59,18 +64,26 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 # perpectiva
 
                 
-                aux = [(aux[0][0]/normal_hx_hy[0]), (aux[1][0]/normal_hx_hy[1])] # adiciona perspectivaem x e remove o eixo Z
+                aux = [(aux[0][0]/normal_hx_hy[0]), (aux[1][0]/normal_hx_hy[1]), aux[2][0]] # adiciona perspectivaem x e continua o eixo Z para  o zbuffer
                 
                 aux = [ int((((aux[0]+1) / 2) * resolucao[0]) + 0.5), 
-                       int(resolucao[1] - (((aux[1]+1) / 2) * resolucao[1])  + 0.5)] # adiciona perspectivaem y e remove o eixo Z
+                       int(resolucao[1] - (((aux[1]+1) / 2) * resolucao[1])  + 0.5),
+                       int(aux[2] + 0.5)] # adiciona perspectivaem y e remove o eixo Z
+                
+                if 0 <= aux[0] <= resolucao[1] and 0 <= aux[1] <= resolucao[1]:
+                    z_atual = self.Z_buffer[aux[0]][aux[1]]
 
+                    if z_atual == -1 or z_atual > aux[2]:
+                        self.Z_buffer[aux[0]][aux[1]] = aux[2]
+                        
+            
                 lista_projetada.append(aux)
             self.malha_perspectiva = lista_projetada
-            self.rasteirizacao() # já jera a rasterização
+            self.rasteirizacao(resolucao) # já jera a rasterização
         else:
             return -1
         
-    def rasteirizacao(self): # rasteriza a malha
+    def rasteirizacao(self, resolucao): # rasteriza a malha
         faces = self.malha_atual["faces"] # carrega as faces da malha
         self.rasteiros = [] # armazena as linhas
         self.preenchimento = [] # armazena o conteudo dos triangulos
@@ -165,11 +178,12 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
 
     def linha(self, ponto1, ponto2): # gera uma linha
         lista = [] # armazerna a linha
-        x1, y1 = ponto1 # carrega os pontos
-        x2, y2 = ponto2
+        x1, y1, z1 = ponto1 # carrega os pontos
+        x2, y2, z2 = ponto2
         
         deltax = abs(x2 - x1) # valor absoluto
         deltay = abs(y2 - y1)
+        deltaz = abs(z2 - z1)
         
         if x1 < x2: # verifica para qual lado a linha deve ir
             sx = 1
@@ -179,27 +193,42 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             sy = 1
         else:
             sy = -1
+        if z1 < z2:
+            sz = 1
+        else:
+            sz = -1
         
-        erro = deltax - deltay # gera o erro
+        erro1 = deltax - deltay # gera o erro para x e y
+        erro2 = deltax - deltaz # gera o erro para x e z
         
-        x = x1 # x e y a seram adicionados
+        x = x1 # x, y e z a seram adicionados
         y = y1
+        z = z1
         
         while True: # loop que cria a linha
-            lista.append((x, y)) # adiciona o ponto
-            if x == x2 and y == y2: # trava a linha no ponto final
+            lista.append((x, y, z)) # adiciona o ponto
+            if x == x2 and y == y2 and z == z2: # trava a linha no ponto final
                 break
             
-            erro2 = 2 * erro # calcula o erro
+            erro2_2 = 2 * erro2 # calcula o erro para x e z
+            erro1_2 = 2 * erro1 # calcula o erro para x e y
 
-            if erro2 > -deltay: # verifica o erro para alterar x e y
-                erro -= deltay
+            if erro2_2 > -deltay: # verifica o erro para alterar x e y
+                erro2 -= deltay
                 x += sx
             
-            if erro2 < deltax:
-                erro += deltax
+            if erro1_2 > -deltaz: # verifica o erro para alterar x e z
+                erro1 -= deltaz
+                x += sx
+                
+            if erro2_2 < deltax: # verifica o erro para alterar y e z
+                erro2 += deltax
+                z += sz
+            
+            if erro1_2 < deltax: # verifica o erro para alterar y e z
+                erro1 += deltax
                 y += sy
-        
+        print(lista)
         return lista
 
     def exibir_malha(self): # So printa bonitinho

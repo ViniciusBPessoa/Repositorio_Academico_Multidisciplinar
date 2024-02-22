@@ -6,22 +6,22 @@ import webbrowser
 import pygame
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from arquivos import gerenciador_arquivos # gerencia as malhas e as cameras
+from arquivos.gerenciador_arquivos import *  # gerencia as malhas e as cameras
 from arquivos.auxiliares.aux_main import loader_malha, loader_normal_Hxy
 
-def plota_obj(janela, pontos, cor_ponto, faces, preenchimento, estado = 3):  # função responsavel por plotar todos os pontos em tela
-    for ponto in pontos: # plota os pontos 
+def plota_obj(janela, gerenciador_modelo : Gerenciador_Modelo, cor_ponto, estado = 3):  # função responsavel por plotar todos os pontos em tela
+    for ponto in gerenciador_modelo.malha_perspectiva: # plota os pontos 
         pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
 
     if estado == 3 or estado == 2: # verifica os imputs do usuario
 
-        for face in faces: # plota as linhas incluindo a linha de devisão dos triangulos
+        for face in gerenciador_modelo.rasteiros: # plota as linhas incluindo a linha de devisão dos triangulos
             for aresta in face:
                 for ponto in aresta:
                     pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
         
         if estado == 3:  # estado de plot total (pontos linhas e conteudo)
-            for linha in preenchimento:
+            for linha in gerenciador_modelo.preenchimento:
                 if len(linha) != 0:
                     for ponto in linha:
                         pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
@@ -33,12 +33,12 @@ tela = pygame.display.set_mode((resolu[0], resolu[1])) # cria a tela
 pygame.display.set_caption('3D Objects') # da nome a tela
 
 # carrega a camera (sera a mesma todo o projeto)
-gerenciador_camera = gerenciador_arquivos.Gerenciador_camera()
+gerenciador_camera = Gerenciador_camera()
 gerenciador_camera.carregar_camera("camera01")
 normal_Hxy = loader_normal_Hxy(gerenciador_camera)
 
 # Carregador de malha apenas instancia a classe
-gerenciador_modelo = gerenciador_arquivos.Gerenciador_Modelo() 
+gerenciador_modelo = Gerenciador_Modelo() 
 
 estado_plot = 3
 loader_malha(gerenciador_modelo, gerenciador_camera, "calice2", normal_Hxy, resolu)
@@ -87,7 +87,7 @@ while executando: # loop principal
             if evento.key == pygame.K_7: # 7 faz coisas
                 webbrowser.open("https://www.youtube.com/watch?v=VBJvDgBZEi4")
 
-    plota_obj(tela, gerenciador_modelo.malha_perspectiva, (255,255,255), gerenciador_modelo.rasteiros, gerenciador_modelo.preenchimento, estado_plot) # plota todos os valores em tela
+    plota_obj(tela, gerenciador_modelo, (255,255,255), estado_plot) # plota todos os valores em tela
 
     # Atualiza a tela
     pygame.display.update()
