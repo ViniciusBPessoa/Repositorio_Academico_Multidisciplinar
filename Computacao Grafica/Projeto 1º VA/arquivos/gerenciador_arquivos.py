@@ -45,9 +45,9 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         except FileNotFoundError:
             return -1 # caso o retorno seja -1 o modelo não foi carregado com sucesso
         
-    def projecao_malha(self, matriz_transfer, foco, distancia, normal_hx_hy, resolucao):
+    def projecao_malha(self, matriz_transfer, foco, distancia, normal_hx_hy, resolucao, Z_bff):
         lista_projetada = [] # carrega a lista com os vetores ate o fim (com as transiçoes corretas e a perspectiva)
-        self.Z_buffer = [[-1] * resolucao[1] for _ in range(resolucao[0])] # preenche meu zbuffer com os valores que não serão dezenhados
+        self.Z_buffer = Z_bff
 
 
         if self.malha_atual != None: # caso a malha ainda não esteja carregada 0
@@ -66,11 +66,11 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 
                 aux = [(aux[0][0]/normal_hx_hy[0]), (aux[1][0]/normal_hx_hy[1]), aux[2][0]] # adiciona perspectivaem x e continua o eixo Z para  o zbuffer
                 
-                aux = [ int((((aux[0]+1) / 2) * resolucao[0]) + 0.5), 
+                aux = [int((((aux[0]+1) / 2) * resolucao[0]) + 0.5), 
                        int(resolucao[1] - (((aux[1]+1) / 2) * resolucao[1])  + 0.5),
                        int(aux[2] + 0.5)] # adiciona perspectivaem y e remove o eixo Z
                 
-                if 0 <= aux[0] <= resolucao[1] and 0 <= aux[1] <= resolucao[1]:
+                if 0 <= aux[0] <= resolucao[0] and 0 <= aux[1] <= resolucao[1]:
                     z_atual = self.Z_buffer[aux[0]][aux[1]]
 
                     if z_atual == -1 or z_atual > aux[2]:
@@ -79,11 +79,12 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             
                 lista_projetada.append(aux)
             self.malha_perspectiva = lista_projetada
-            self.rasteirizacao(resolucao) # já jera a rasterização
+            self.rasteirizacao() # já jera a rasterização
+            return self.Z_buffer
         else:
             return -1
         
-    def rasteirizacao(self, resolucao): # rasteriza a malha
+    def rasteirizacao(self): # rasteriza a malha
         faces = self.malha_atual["faces"] # carrega as faces da malha
         self.rasteiros = [] # armazena as linhas
         self.preenchimento = [] # armazena o conteudo dos triangulos
@@ -138,43 +139,44 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                             while True: # loop principal
                                 if y == ponto_d[1]: # trava a rasteirização quando acha o ponto D
                                     break
-                                x_min = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)][0] # calcula x_min e x_max
-                                x_max = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)][0]
+                                x_lado_1 = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)] # calcula x_min e x_max
+                                x_lado_2 = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)]
+                                linha = self.linha(x_lado_1, x_lado_2)
                                 
-                                if x_min > x_max: # verifica o lado para o qual o triangulo esta voltado e recarrega os valores de x caso nescessario
-                                    aux = x_min
-                                    x_min = x_max
-                                    x_max = aux
-                                
-                                for x in range(x_min, x_max + 1): # adionana cada ponto da linha
-                                    linha.append([x, y])
                                 y -= 1 # caso o ponto seja aciam y -= 1
                                 pontos_plot.append(linha)
+                                self.preenchimento.append(linha)
                         else: # ponto abaixo (restante igual o anterior)
-                            linha_1 = self.linha(ponto_referencia, ponto_d)
-                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c)
+                            linha_1 = self.linha(ponto_referencia, ponto_d) # gera uma linha de apoio entre o ponto d e a referencia 
+                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c) # O mesmo
                             
-                            y = ponto_referencia[1]
-                            pontos_plot = []
-                            linha = []
+                            y = ponto_referencia[1] # y = o y da referencia 
+                            pontos_plot = [] # lista com listas de pontos 
+                            linha = [] # lista de po9nto para cada linha
                             
-                            while True:
-                                if y == ponto_d[1]:
+                            while True: # loop principal
+                                if y == ponto_d[1]: # trava a rasteirização quando acha o ponto D
                                     break
-                                x_min = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)][0]
-                                x_max = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)][0]
+                                x_lado_1 = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)] # calcula x_min e x_max
+                                x_lado_2 = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)]
+                                linha = self.linha(x_lado_1, x_lado_2)
                                 
-                                if x_min > x_max:
-                                    aux = x_min
-                                    x_min = x_max
-                                    x_max = aux
-
-                                for x in range(x_min, x_max + 1):
-                                    linha.append([x, y])
-                                y += 1 # Contrario do caso cima
+                                y += 1 # caso o ponto seja aciam y -= 1
                                 pontos_plot.append(linha)
-                        self.preenchimento.append(linha)
-
+                            self.preenchimento.append(linha)
+                        print("\nPQP FACULDADE DO CARALHO")
+                        for lista in self.rasteiros:
+                            for lista2 in lista:
+                                print(lista2)
+                        print()
+                        print()
+                        for lista in self.preenchimento:
+                            print(lista)
+                        print()
+                        for lista in self.malha_perspectiva:
+                            print(lista)
+                        # print()
+                        # print(self.Z_buffer)
 
     def linha(self, ponto1, ponto2): # gera uma linha
         lista = [] # armazerna a linha
@@ -198,37 +200,38 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         else:
             sz = -1
         
-        erro1 = deltax - deltay # gera o erro para x e y
-        erro2 = deltax - deltaz # gera o erro para x e z
+        erro = deltax - deltay # gera o erro
         
-        x = x1 # x, y e z a seram adicionados
+        x = x1 # x, y a serem adicionados
         y = y1
         z = z1
         
         while True: # loop que cria a linha
-            lista.append((x, y, z)) # adiciona o ponto
-            if x == x2 and y == y2 and z == z2: # trava a linha no ponto final
+            lista.append([x, y]) # adiciona o ponto
+            if x == x2 and y == y2: # trava a linha no ponto final
                 break
             
-            erro2_2 = 2 * erro2 # calcula o erro para x e z
-            erro1_2 = 2 * erro1 # calcula o erro para x e y
+            erro2 = 2 * erro # calcula o erro
 
-            if erro2_2 > -deltay: # verifica o erro para alterar x e y
-                erro2 -= deltay
+            if erro2 > -deltay: # verifica o erro para alterar x e y
+                erro -= deltay
                 x += sx
             
-            if erro1_2 > -deltaz: # verifica o erro para alterar x e z
-                erro1 -= deltaz
-                x += sx
-                
-            if erro2_2 < deltax: # verifica o erro para alterar y e z
-                erro2 += deltax
-                z += sz
-            
-            if erro1_2 < deltax: # verifica o erro para alterar y e z
-                erro1 += deltax
+            if erro2 < deltax:
+                erro += deltax
                 y += sy
-        print(lista)
+
+
+        z_uper = ((deltaz / len(lista)) + 0.5) * sz
+        for item in lista:
+            z += int(z_uper)
+            item.append(z)
+
+            if 0 <= item[0] <= len(self.Z_buffer) and 0 <= item[1] <= len(self.Z_buffer[0]):
+                z_atual = self.Z_buffer[item[0]][item[1]]
+                if z_atual == -1 or z_atual > item[2]:
+                    self.Z_buffer[item[0]][item[1]] = item[2]
+
         return lista
 
     def exibir_malha(self): # So printa bonitinho
@@ -247,9 +250,15 @@ class Gerenciador_camera:
         self.nome_camera_atual = None 
         self.camera_atual = None
 
-    def carregar_camera(self, camera = "camera01", ortogonalizar = True): # Responsavel por carregar as informaçoes da camera
-        # Caso ortogonalizar seja verdadeiro a variavel camera_atual sera completa com (V, N, U) carregados e ortonormalizados  caso seja falsa ele apenas carrega da memoria  
+        self.Z_buffer = []
 
+    def carregar_Z_buffer(self, resolucao):
+        self.Z_buffer = [[-1] * resolucao[1] for _ in range(resolucao[0])] # preenche meu zbuffer com os valores que não serão dezenhados
+        return self.Z_buffer
+
+    def carregar_camera(self, camera = "camera01", ortogonalizar = True, resolucao = [750, 750]): # Responsavel por carregar as informaçoes da camera
+        # Caso ortogonalizar seja verdadeiro a variavel camera_atual sera completa com (V, N, U) carregados e ortonormalizados  caso seja falsa ele apenas carrega da memoria  
+        self.carregar_Z_buffer(resolucao)
         arquivo_camera = self.diretorio_cameras + f"{camera}.txt"
 
         try:  # verifica se o arquivo esta ou não na memoria
