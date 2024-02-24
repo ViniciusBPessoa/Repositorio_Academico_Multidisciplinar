@@ -163,20 +163,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                                 
                                 y += 1 # caso o ponto seja aciam y -= 1
                                 pontos_plot.append(linha)
-                            self.preenchimento.append(linha)
-                        print("\nPQP FACULDADE DO CARALHO")
-                        for lista in self.rasteiros:
-                            for lista2 in lista:
-                                print(lista2)
-                        print()
-                        print()
-                        for lista in self.preenchimento:
-                            print(lista)
-                        print()
-                        for lista in self.malha_perspectiva:
-                            print(lista)
-                        # print()
-                        # print(self.Z_buffer)
+                                self.preenchimento.append(linha)
 
     def linha(self, ponto1, ponto2): # gera uma linha
         lista = [] # armazerna a linha

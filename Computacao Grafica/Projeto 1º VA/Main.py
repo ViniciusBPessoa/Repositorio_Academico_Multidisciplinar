@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from arquivos.gerenciador_arquivos import *  # gerencia as malhas e as cameras
 from arquivos.auxiliares.aux_main import loader_malha, loader_normal_Hxy
 
-def plota_obj(janela, gerenciador_modelo : Gerenciador_Modelo, cor_ponto, estado = 2, Z_buffer = [], is_buffer = True):  # função responsavel por plotar todos os pontos em tela
+def plota_obj(janela, gerenciador_modelo : Gerenciador_Modelo, cor_ponto, estado = 3, Z_buffer = [], is_buffer = True):  # função responsavel por plotar todos os pontos em tela
     
     if is_buffer:
         for linha in range(len(Z_buffer)):
@@ -51,7 +51,7 @@ is_zbf = True
 gerenciador_modelo = Gerenciador_Modelo() 
 
 estado_plot = 2
-_, Z_buffer = loader_malha(gerenciador_modelo, gerenciador_camera, "triangulo", normal_Hxy, resolu, Z_buffer)
+_, Z_buffer = loader_malha(gerenciador_modelo, gerenciador_camera, "calice2", normal_Hxy, resolu, Z_buffer)
 
 executando = True # variavel responsavel por manter a tela aberta
 while executando: # loop principal
