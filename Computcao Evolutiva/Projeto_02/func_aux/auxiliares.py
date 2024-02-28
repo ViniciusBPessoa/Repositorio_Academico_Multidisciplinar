@@ -1,5 +1,6 @@
 import numpy as np
 
+from copy import deepcopy
 import random
 import torch
 import torch.nn as nn
@@ -38,11 +39,12 @@ def computacao_evolutiva_mutador_Spais(n_geracao, pais, lr):
     return nextgenindividuals
 
 def aplica_mutacao(rede_neural, learning_rate):
-    for nome_parametro, parametro in rede_neural.named_parameters():
+    rede_mutada = deepcopy(rede_neural)
+    for nome_parametro, parametro in rede_mutada.named_parameters():
         if 'weight' in nome_parametro:  # Apenas aplicar mutação aos pesos
-            novo_parametro = parametro + learning_rate * torch.randn_like(parametro)
-            setattr(rede_neural, nome_parametro, novo_parametro)
-            
-    return rede_neural
+            with torch.no_grad():
+                parametro += learning_rate * torch.randn_like(parametro)
+    return rede_mutada
+
         
         

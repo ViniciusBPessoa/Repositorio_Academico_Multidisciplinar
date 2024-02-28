@@ -21,4 +21,3 @@ class MLP(nn.Module):
         for layer in self.layers:
             y = layer(y)
         return y
-            
