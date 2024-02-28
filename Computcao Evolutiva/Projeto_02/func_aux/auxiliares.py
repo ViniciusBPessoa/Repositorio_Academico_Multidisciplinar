@@ -5,6 +5,9 @@ import random
 import torch
 import torch.nn as nn
 
+import pickle
+
+
 def escolhe_acao(rede_neural, imagem):
     estado_array = np.array(imagem)
     estado_tensor = torch.tensor(estado_array, dtype=torch.float32)
@@ -46,5 +49,21 @@ def aplica_mutacao(rede_neural, learning_rate):
                 parametro += learning_rate * torch.randn_like(parametro)
     return rede_mutada
 
-        
-        
+def salvar_dados(dados, nome_arquivo):
+    """Salva os dados em um arquivo usando pickle."""
+    with open(nome_arquivo, 'wb') as arquivo:
+        pickle.dump(dados, arquivo)
+    print(f'Dados salvos em {nome_arquivo}.')
+
+def recarregar_dados(nome_arquivo):
+    """Recarrega os dados de um arquivo usando pickle."""
+    with open(nome_arquivo, 'rb') as arquivo:
+        dados = pickle.load(arquivo)
+    print(f'Dados recarregados de {nome_arquivo}.')
+    return dados
+
+def calcular_media(lista):
+    """Calcula a média de uma lista."""
+    if not lista:
+        return 0  # Retorna 0 se a lista estiver vazia para evitar divisão por zero
+    return sum(lista) / len(lista)
