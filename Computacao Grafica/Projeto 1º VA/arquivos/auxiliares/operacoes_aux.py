@@ -67,3 +67,12 @@ def encontrar_lista_por_Y(lista, valor_procurado): # devolve o indice do da lita
         if sublista[1] == valor_procurado:
             return lista.index(sublista)
     return None  # Retorna None se o valor não for encontrado
+
+def encontrar_indices_triângulos_do_vértice(índice_vértice, lista_triângulos):
+    índices_triângulos_do_vértice = []
+    for i, triângulo in enumerate(lista_triângulos):
+        if índice_vértice in triângulo:
+            índices_triângulos_do_vértice.append(i)
+    return índices_triângulos_do_vértice
+
+

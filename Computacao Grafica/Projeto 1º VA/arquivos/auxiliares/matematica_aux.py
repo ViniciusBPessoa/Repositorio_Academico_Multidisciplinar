@@ -1,4 +1,4 @@
-def subtrair_listas(lista1, lista2):
+def subtrair_matrizes(lista1, lista2):
     # Verifica se as listas têm o mesmo comprimento
     if len(lista1) != len(lista2):
         return "As listas têm comprimentos diferentes. Não é possível subtrair."
@@ -34,3 +34,52 @@ def elevador_matriz(lista, expoente): # eleva uma matriz ao expoente
 
 def dividir_matriz(lista, divisor): # divide cada item de uma matriz por divisor
     return [item / divisor for item in lista]
+
+
+def produto_vetorial(vetor1, vetor2): # produto vetorial
+    x = vetor1[1] * vetor2[2] - vetor1[2] * vetor2[1]
+    y = vetor1[2] * vetor2[0] - vetor1[0] * vetor2[2]
+    z = vetor1[0] * vetor2[1] - vetor1[1] * vetor2[0]
+    
+    return [x, y, z]
+
+def normaliza_matriz(vetor): # Normaliza um vetor
+    vetor_quad = elevador_matriz(vetor, 2)
+    norma = sum(vetor_quad) ** 0.5
+    return dividir_matriz(vetor, norma)
+
+def somar_vetores(vetor1, vetor2):
+    return [vetor1[0] + vetor2[0], vetor1[1] + vetor2[1], vetor1[2] + vetor2[2]]
+
+
+def calcula_distancia(N):
+    distancia = elevador_matriz(N, 2)
+    distancia = sum(distancia)
+    return distancia ** 0.5
+
+def area_triangulo(P1, P2, P3):
+    calc_b_a = subtrair_matrizes(P2, P1)
+    calc_c_a = subtrair_matrizes(P3, P1)
+
+    
+
+    prod = produto_vetorial(calc_b_a, calc_c_a)
+    
+    return calcula_distancia(prod)
+
+
+def multiplicar_constante_lista(constante, lista):
+
+    resultado = [constante * elemento for elemento in lista]
+    return resultado
+
+def somar_vetores(vetor1, vetor2):
+ 
+    # Verifica se os vetores têm o mesmo comprimento
+    if len(vetor1) != len(vetor2):
+        raise ValueError("Os vetores devem ter o mesmo comprimento.")
+
+    # Realiza a soma dos vetores elemento por elemento
+    resultado = [vetor1[i] + vetor2[i] for i in range(len(vetor1))]
+    
+    return resultado

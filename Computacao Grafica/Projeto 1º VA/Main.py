@@ -17,18 +17,18 @@ def plota_obj(janela, gerenciador_modelo : Gerenciador_Modelo, cor_ponto, estado
                 if Z_buffer[linha][coluna] != -1:
                     pygame.draw.rect(janela, cor_ponto, (linha, coluna, 1, 1))
     else:
-        for ponto in gerenciador_modelo.malha_perspectiva: # plota os pontos 
+        for ponto in gerenciador_modelo.malha_pontos_perspectiva: # plota os pontos 
             pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
 
         if estado == 3 or estado == 2: # verifica os imputs do usuario
 
-            for face in gerenciador_modelo.rasteiros: # plota as linhas incluindo a linha de devisão dos triangulos
+            for face in gerenciador_modelo.linhas_rasteirizadas: # plota as linhas incluindo a linha de devisão dos triangulos
                 for aresta in face:
                     for ponto in aresta:
                         pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
             
             if estado == 3:  # estado de plot total (pontos linhas e conteudo)
-                for linha in gerenciador_modelo.preenchimento:
+                for linha in gerenciador_modelo.pontos_preenchimento_triangulo:
                     if len(linha) != 0:
                         for ponto in linha:
                             pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))
@@ -103,6 +103,8 @@ while executando: # loop principal
             
             if evento.key == pygame.K_7: # 7 faz coisas
                 webbrowser.open("https://www.youtube.com/watch?v=VBJvDgBZEi4")
+            if evento.key == pygame.K_8: # 7 faz coisas
+                print(gerenciador_modelo.normais_vertices)
 
     gerenciador_camera.Z_buffer = Z_buffer
     plota_obj(tela, gerenciador_modelo, (255,255,255), estado_plot, Z_buffer, is_zbf) # plota todos os valores em tela

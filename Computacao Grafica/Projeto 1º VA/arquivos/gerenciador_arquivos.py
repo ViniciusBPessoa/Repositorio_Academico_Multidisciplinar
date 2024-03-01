@@ -12,9 +12,12 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
         self.malha_atual = None # mantem a malha atravez de um dicionario
 
-        self.malha_perspectiva = None # essa é a malha final (perpectiva e bem formada)
-        self.rasteiros = None # total rasteiros
-        self.preenchimento = None # todas as linhas que preenchem o modelo
+        self.malha_pontos_perspectiva = None # essa é a malha final (perpectiva e bem formada)
+        self.linhas_rasteirizadas = None # total rasteiros
+        self.pontos_preenchimento_triangulo = None # todas as linhas que preenchem o modelo
+
+        self.normais_triangulos = None # recebe a normal de cada triandulo na ordem da memoria
+        self.normais_vertices = None # armazena as normais de cada um dos vertices armazenados
 
         self.Z_buffer = []
 
@@ -55,7 +58,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
 
             for ponto in lista_coordenadas:
                 # Transição linear
-                ponto = matematica_aux.subtrair_listas(ponto, foco) # P - C
+                ponto = matematica_aux.subtrair_matrizes(ponto, foco) # P - C
                 ponto = [[ponto[0]], [ponto[1]], [ponto[2]]] # passa o ponto para uma matris de 1 coluna
                 aux = matematica_aux.multiplicar_matrizes(matriz_transfer, ponto) # tudo agora esta na base correta (resta perspectiva)
                 
@@ -78,35 +81,97 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                         
             
                 lista_projetada.append(aux)
-            self.malha_perspectiva = lista_projetada
+            self.malha_pontos_perspectiva = lista_projetada
             self.rasteirizacao() # já jera a rasterização
             return self.Z_buffer
         else:
             return -1
-        
-    def rasteirizacao(self): # rasteriza a malha
+    
+    def calcula_normais_TRIANGULOS_geral(self):
         faces = self.malha_atual["faces"] # carrega as faces da malha
-        self.rasteiros = [] # armazena as linhas
-        self.preenchimento = [] # armazena o conteudo dos triangulos
+        
+        self.normais_triangulos = [] # inicializa a lista de normais de triangulos
         for face in faces: # loop de faces
             
             # coletando os pontos
-            a = self.malha_perspectiva[face[0] - 1]
-            b = self.malha_perspectiva[face[1] - 1]
-            c = self.malha_perspectiva[face[2] - 1]
+            v1 = self.malha_pontos_perspectiva[face[0] - 1]
+            v2= self.malha_pontos_perspectiva[face[1] - 1]
+            v3 = self.malha_pontos_perspectiva[face[2] - 1]
+
+            normal_triangulo = self.calcula_normal_triangulo(v1, v2, v3)
+            self.normais_triangulos.append(normal_triangulo)
+        
+        self.calcula_normais_VERTICES()
+    
+    def calcula_normais_VERTICES(self):
+        self.normais_vertices = []
+        for vertice in range(1, len(self.malha_atual["vertices"]) + 1): # percorre todos os vertices calculando as nmormais deles
+            triangulos = operacoes_aux.encontrar_indices_triângulos_do_vértice(vertice, self.malha_atual["faces"])
+            
+            normal_final_vertice = [0, 0, 0]
+
+            for indice_triangulo in triangulos:
+                normal_atual_triangulo = self.normais_triangulos[indice_triangulo]
+                normal_final_vertice = matematica_aux.somar_vetores(normal_final_vertice, normal_atual_triangulo)
+            
+            self.normais_vertices.append(matematica_aux.normaliza_matriz(normal_final_vertice))
+        
+    def calcula_normal_triangulo(self, v1, v2, v3):
+        sub_v2_v1 = matematica_aux.subtrair_matrizes(v2, v1) # calcula a subtração dos vertices 
+        sub_v3_v1 = matematica_aux.subtrair_matrizes(v3, v1)
+        normal_triangulo = matematica_aux.produto_vetorial(sub_v2_v1, sub_v3_v1) # calcula a normal não normalizada
+        
+        normal_triangulo_normalizada = matematica_aux.normaliza_matriz(normal_triangulo)  # normaliza a normal do triângulo
+        
+        return normal_triangulo_normalizada
+    
+    def calculate_barycentric_coordinates(self, P, P1, P2, P3):
+        area_0 = matematica_aux.area_triangulo(P1, P2, P3)
+        area_1 = matematica_aux.area_triangulo(P, P1, P2)
+        area_2 = matematica_aux.area_triangulo(P, P1, P2)
+
+        alpha = area_1/area_0
+        beta = area_2/ area_0
+        gamma = 1 - alpha - beta
+        
+        return alpha, beta, gamma
+
+    def calcula_coordenadas_vista_ponto(self, P, vertices_agora, vertices_antes):
+        alpha, beta, gamma = self.calculate_barycentric_coordinates(P, vertices_agora[0], vertices_agora[1], vertices_agora[2])
+        aux_alpha = matematica_aux.multiplicar_constante_lista(alpha, vertices_antes[0])
+        aux_beta = matematica_aux.multiplicar_constante_lista(beta, vertices_antes[1])
+        aux_gamma = matematica_aux.multiplicar_constante_lista(gamma, vertices_antes[2])
+        return matematica_aux.somar_vetores(aux_alpha, matematica_aux.somar_vetores(aux_beta, aux_gamma))
+
+        
+
+    def rasteirizacao(self): # rasteriza a malha
+
+        self.calcula_normais_TRIANGULOS_geral() # antes de gerar os pontos calcula cada uma das normais 
+
+        faces = self.malha_atual["faces"] # carrega as faces da malha
+        self.linhas_rasteirizadas = [] # armazena as linhas
+        self.pontos_preenchimento_triangulo = [] # armazena o conteudo dos triangulos[]
+        
+        for face in faces: # loop de faces
+            
+            # coletando os pontos
+            v1 = self.malha_pontos_perspectiva[face[0] - 1]
+            v2 = self.malha_pontos_perspectiva[face[1] - 1]
+            v3 = self.malha_pontos_perspectiva[face[2] - 1]
 
             # gerando as linhas de cada face
             linhas = []
-            linha_a_b = self.linha(a, b)
+            linha_a_b = self.linha(v1, v2)
             linhas.append(linha_a_b)
 
-            linha_b_c = self.linha(b, c)
+            linha_b_c = self.linha(v2, v3)
             linhas.append(linha_b_c)
 
-            linha_c_a = self.linha(c, a)
+            linha_c_a = self.linha(v3, v1)
             linhas.append(linha_c_a)
 
-            lista_pontos = [a,b,c] # armazena os tres pontos
+            lista_pontos = [v1,v2,v3] # armazena os tres pontos
             ponto_central = operacoes_aux.encontrar_centro(lista_pontos) # devolve o ponto no centro em y
             ponto_a_b_c = lista_pontos[ponto_central] # ponto central pode ser a, b, c tanto faz
 
@@ -122,7 +187,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 #Gera a linha que corta o triangulo para rasterizar o sentro
                 listra_corte = self.linha(ponto_d, ponto_a_b_c)
                 linhas.append(listra_corte)
-                self.rasteiros.append(linhas) # adiciona todas as linhas a lista geral
+                self.linhas_rasteirizadas.append(linhas) # adiciona todas as linhas a lista geral
 
                 for id_inicial in range(len(lista_pontos)): # Gera o conteudo
                     if id_inicial != ponto_central: # verificação para impedir que o pondo gerador de D seja levado em consideração
@@ -145,7 +210,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                                 
                                 y -= 1 # caso o ponto seja aciam y -= 1
                                 pontos_plot.append(linha)
-                                self.preenchimento.append(linha)
+                                self.pontos_preenchimento_triangulo.append(linha)
                         else: # ponto abaixo (restante igual o anterior)
                             linha_1 = self.linha(ponto_referencia, ponto_d) # gera uma linha de apoio entre o ponto d e a referencia 
                             linha_2 = self.linha(ponto_referencia, ponto_a_b_c) # O mesmo
@@ -163,8 +228,9 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                                 
                                 y += 1 # caso o ponto seja aciam y -= 1
                                 pontos_plot.append(linha)
-                                self.preenchimento.append(linha)
+                                self.pontos_preenchimento_triangulo.append(linha)
 
+    
     def linha(self, ponto1, ponto2): # gera uma linha
         lista = [] # armazerna a linha
         x1, y1, z1 = ponto1 # carrega os pontos
@@ -217,9 +283,11 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             if 0 <= item[0] <= len(self.Z_buffer) and 0 <= item[1] <= len(self.Z_buffer[0]):
                 z_atual = self.Z_buffer[item[0]][item[1]]
                 if z_atual == -1 or z_atual > item[2]:
+
                     self.Z_buffer[item[0]][item[1]] = item[2]
 
         return lista
+
 
     def exibir_malha(self): # So printa bonitinho
         if self.malha_atual != None:
