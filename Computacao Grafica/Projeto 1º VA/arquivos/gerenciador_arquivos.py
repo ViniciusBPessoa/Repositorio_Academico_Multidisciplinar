@@ -9,6 +9,9 @@ from auxiliares import operacoes_aux, matematica_aux
 class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
     def __init__(self):
         self.diretorio_modelos = os.path.dirname(os.path.abspath(__file__)) + "/modelos/" # Para executar sempre (Carrega a devida localização)
+        self.iluminacao = Gerenciador_inuminacao()
+        self.iluminacao.carregar_iluminacão()
+
         self.nome_malha_atual = None # recebe o nome do arquivo da malha
         self.malha_atual = None # mantem a malha atravez de um dicionario
 
@@ -18,6 +21,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
 
         self.normais_triangulos = None # recebe a normal de cada triandulo na ordem da memoria
         self.normais_vertices = None # armazena as normais de cada um dos vertices armazenados
+
 
         self.Z_buffer = []
 
@@ -76,8 +80,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                 if 0 <= aux[0] <= resolucao[0] and 0 <= aux[1] <= resolucao[1]:
                     z_atual = self.Z_buffer[aux[0]][aux[1]]
 
-                    if z_atual == -1 or z_atual > aux[2]:
-                        self.Z_buffer[aux[0]][aux[1]] = aux[2]
+                    if z_atual == -1 or z_atual[0] > aux[2]:
+                        self.Z_buffer[aux[0]][aux[1]] = [aux[2], [255,255,255]]
                         
             
                 lista_projetada.append(aux)
@@ -143,8 +147,6 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
         aux_gamma = matematica_aux.multiplicar_constante_lista(gamma, vertices_antes[2])
         return matematica_aux.somar_vetores(aux_alpha, matematica_aux.somar_vetores(aux_beta, aux_gamma))
 
-        
-
     def rasteirizacao(self): # rasteriza a malha
 
         self.calcula_normais_TRIANGULOS_geral() # antes de gerar os pontos calcula cada uma das normais 
@@ -159,19 +161,19 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             v1 = self.malha_pontos_perspectiva[face[0] - 1]
             v2 = self.malha_pontos_perspectiva[face[1] - 1]
             v3 = self.malha_pontos_perspectiva[face[2] - 1]
+            lista_pontos = [v1,v2,v3] # armazena os tres pontos
 
             # gerando as linhas de cada face
             linhas = []
-            linha_a_b = self.linha(v1, v2)
+            linha_a_b = self.linha(v1, v2, lista_pontos, face)
             linhas.append(linha_a_b)
 
-            linha_b_c = self.linha(v2, v3)
+            linha_b_c = self.linha(v2, v3, lista_pontos, face)
             linhas.append(linha_b_c)
 
-            linha_c_a = self.linha(v3, v1)
+            linha_c_a = self.linha(v3, v1, lista_pontos, face)
             linhas.append(linha_c_a)
 
-            lista_pontos = [v1,v2,v3] # armazena os tres pontos
             ponto_central = operacoes_aux.encontrar_centro(lista_pontos) # devolve o ponto no centro em y
             ponto_a_b_c = lista_pontos[ponto_central] # ponto central pode ser a, b, c tanto faz
 
@@ -185,7 +187,7 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
             if ponto_d != -1:
                 
                 #Gera a linha que corta o triangulo para rasterizar o sentro
-                listra_corte = self.linha(ponto_d, ponto_a_b_c)
+                listra_corte = self.linha(ponto_d, ponto_a_b_c, lista_pontos, face)
                 linhas.append(listra_corte)
                 self.linhas_rasteirizadas.append(linhas) # adiciona todas as linhas a lista geral
 
@@ -194,8 +196,8 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                         ponto_referencia = lista_pontos[id_inicial] # um dos dois casos ou o ponto acima ou o ponto abaixo
                         if ponto_referencia[1] > ponto_a_b_c[1]: # ponto acima
                             
-                            linha_1 = self.linha(ponto_referencia, ponto_d) # gera uma linha de apoio entre o ponto d e a referencia 
-                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c) # O mesmo
+                            linha_1 = self.linha(ponto_referencia, ponto_d, lista_pontos, face) # gera uma linha de apoio entre o ponto d e a referencia 
+                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c, lista_pontos, face) # O mesmo
                             
                             y = ponto_referencia[1] # y = o y da referencia 
                             pontos_plot = [] # lista com listas de pontos 
@@ -206,14 +208,14 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                                     break
                                 x_lado_1 = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)] # calcula x_min e x_max
                                 x_lado_2 = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)]
-                                linha = self.linha(x_lado_1, x_lado_2)
+                                linha = self.linha(x_lado_1, x_lado_2, lista_pontos, face)
                                 
                                 y -= 1 # caso o ponto seja aciam y -= 1
                                 pontos_plot.append(linha)
                                 self.pontos_preenchimento_triangulo.append(linha)
                         else: # ponto abaixo (restante igual o anterior)
-                            linha_1 = self.linha(ponto_referencia, ponto_d) # gera uma linha de apoio entre o ponto d e a referencia 
-                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c) # O mesmo
+                            linha_1 = self.linha(ponto_referencia, ponto_d, lista_pontos, face) # gera uma linha de apoio entre o ponto d e a referencia 
+                            linha_2 = self.linha(ponto_referencia, ponto_a_b_c, lista_pontos, face) # O mesmo
                             
                             y = ponto_referencia[1] # y = o y da referencia 
                             pontos_plot = [] # lista com listas de pontos 
@@ -224,14 +226,14 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
                                     break
                                 x_lado_1 = linha_1[operacoes_aux.encontrar_lista_por_Y(linha_1, y)] # calcula x_min e x_max
                                 x_lado_2 = linha_2[operacoes_aux.encontrar_lista_por_Y(linha_2, y)]
-                                linha = self.linha(x_lado_1, x_lado_2)
+                                linha = self.linha(x_lado_1, x_lado_2, lista_pontos, face)
                                 
                                 y += 1 # caso o ponto seja aciam y -= 1
                                 pontos_plot.append(linha)
                                 self.pontos_preenchimento_triangulo.append(linha)
 
     
-    def linha(self, ponto1, ponto2): # gera uma linha
+    def linha(self, ponto1, ponto2, lista_pontos, face): # gera uma linha
         lista = [] # armazerna a linha
         x1, y1, z1 = ponto1 # carrega os pontos
         x2, y2, z2 = ponto2
@@ -282,12 +284,52 @@ class Gerenciador_Modelo: # responsavel por gerenciar o carregamento do modelo
 
             if 0 <= item[0] <= len(self.Z_buffer) and 0 <= item[1] <= len(self.Z_buffer[0]):
                 z_atual = self.Z_buffer[item[0]][item[1]]
-                if z_atual == -1 or z_atual > item[2]:
+                if z_atual == -1 or z_atual[0] > item[2]:
+                    
 
-                    self.Z_buffer[item[0]][item[1]] = item[2]
+                    self.add_Zbuffer(item, lista_pontos, face)
+
+                    self.Z_buffer[item[0]][item[1]] = [item[2], [255,255,255]]
 
         return lista
 
+    
+    def add_Zbuffer(self, ponto, pontos_novos, face): # muita coisa sksksksksksk
+        ponto_em_vista = self.calcula_coordenadas_vista_ponto(ponto, pontos_novos, [self.malha_atual["vertices"][face[0]], self.malha_atual["vertices"][face[1]], self.malha_atual["vertices"][face[2]]]) # encontra o ponto em coordenadas de vista
+        alpha, beta, gamma = self.calculate_barycentric_coordinates(ponto_em_vista, pontos_novos[0], pontos_novos[1], pontos_novos[2]) # procura alpha beta e gama
+
+        aux_normal_1 = matematica_aux.multiplicar_constante_lista(alpha, self.normais_vertices[face[0]]) # busca as normais
+        aux_normal_2 = matematica_aux.multiplicar_constante_lista(beta, self.normais_vertices[face[1]])
+        aux_normal_3 = matematica_aux.multiplicar_constante_lista(gamma, self.normais_vertices[face[2]])
+        normal_ponto = matematica_aux.somar_vetores(aux_normal_1, matematica_aux.somar_vetores(aux_normal_2, aux_normal_3)) # cria a normal do ponto
+        normal_ponto = matematica_aux.normaliza_matriz(normal_ponto) #normaliza
+
+        V_ponto = matematica_aux.negativar_vetor(ponto_em_vista) # busca V
+        V_ponto = matematica_aux.normaliza_matriz(V_ponto) # normaliza
+
+        L_camera = self.iluminacao.procura_L(ponto_em_vista) # busca L
+        L_camera = matematica_aux.normaliza_matriz(L_camera) # normaliza
+
+        R_iluminacao = self.iluminacao.calcula_R(normal_ponto, L_camera) # Busca R, ja esta normalizado
+
+        Id = matematica_aux.produto_vetorial(normal_ponto, L_camera)
+        Id = matematica_aux.produto_vetorial(Id, self.iluminacao.iluminacao_atual["Kd"])
+        Id = matematica_aux.produto_vetorial(Id, self.iluminacao.iluminacao_atual["O"])
+        Id = matematica_aux.produto_vetorial(Id, self.iluminacao.iluminacao_atual["Il"]) # carrega e calcula ID componente difusa
+
+        Is = matematica_aux.produto_vetorial(R_iluminacao, V_ponto)
+        Is = matematica_aux.elevador_matriz(Is, self.iluminacao.iluminacao_atual["N"][0])
+        Is = matematica_aux.multiplicar_constante_lista(self.iluminacao.iluminacao_atual["Ks"][0], Is)
+        Is = matematica_aux.produto_vetorial(Is, self.iluminacao.iluminacao_atual["Il"]) # carrega e calcula Is componente especular
+
+        Il = matematica_aux.somar_vetores(Is, self.iluminacao.iluminacao_atual["Iamb"])
+        Il = matematica_aux.somar_vetores(Il, Id) # soma de todas para calcular a cr final
+
+        for c in range(len(Il)):
+            if Il[c] > 255:
+                Il[0] = 255
+        
+        self.Z_buffer[ponto[0]][ponto[1]] = [ponto[2], Il]
 
     def exibir_malha(self): # So printa bonitinho
         if self.malha_atual != None:
@@ -351,4 +393,41 @@ class Gerenciador_camera:
         if self.camera_atual != None:
             for chave, valor in self.camera_atual.items():
                 print(f'{chave}: {valor}')
+    
+class Gerenciador_inuminacao:
+    def __init__(self) -> None:
+        self.diretorio_iluminacao = os.path.dirname(os.path.abspath(__file__)) + "/iliminacoes/"
+        self.iluminacao_atual = None
+        self.nome_iluminacao_atual = None
+
+
+    def carregar_iluminacão(self, iluminacao = "iluminacao01"):
+
+        arquivo_iluminacao = self.diretorio_iluminacao + f"{iluminacao}.txt"
+
+        try:  # verifica se o arquivo esta ou não na memoria
+            with open(arquivo_iluminacao, 'r') as camera_iluminacao:
+                linhas = camera_iluminacao.readlines()
+                possiveis_parametros = ['Iamb', 'K', 'Il', 'P', 'Kd', 'O', 'Ks', 'N']
+                parametros_iluminacao = {}
+
+                for linha, conterudo in enumerate(possiveis_parametros):  # caso o mesmo esteja, essa parte anexa todos os itens a um dicionario
+                    valor = linhas[linha].split() # função magica do python
+                    parametros_iluminacao[conterudo] = [float(x) for x in valor]
+                
+                self.iluminacao_atual = parametros_iluminacao
+                self.nome_iluminacao_atual = iluminacao
+                return self.iluminacao_atual
+
+        except FileNotFoundError:
+            return -1  # Retorna -1 caso o arquivo não seja encontrado
+        
+    def procura_L(self, ponto):
+        return matematica_aux.subtrair_matrizes(self.iluminacao_atual["P"], ponto)
+    
+    def calcula_R(self, N, L):
+        auxiliar = matematica_aux.produto_vetorial(N, L)
+        auxiliar = matematica_aux.multiplicar_constante_lista(2, auxiliar)
+        auxiliar = matematica_aux.subtrair_matrizes(auxiliar, L)
+        return auxiliar
     

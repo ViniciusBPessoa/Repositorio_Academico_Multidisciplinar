@@ -9,13 +9,13 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from arquivos.gerenciador_arquivos import *  # gerencia as malhas e as cameras
 from arquivos.auxiliares.aux_main import loader_malha, loader_normal_Hxy
 
-def plota_obj(janela, gerenciador_modelo : Gerenciador_Modelo, cor_ponto, estado = 3, Z_buffer = [], is_buffer = True):  # função responsavel por plotar todos os pontos em tela
+def plota_obj(janela, gerenciador_modelo : Gerenciador_Modelo, cor_ponto, estado = 3, Z_buffer = [], is_buffer = False):  # função responsavel por plotar todos os pontos em tela
     
     if is_buffer:
         for linha in range(len(Z_buffer)):
             for coluna in range(len(Z_buffer[0])):
                 if Z_buffer[linha][coluna] != -1:
-                    pygame.draw.rect(janela, cor_ponto, (linha, coluna, 1, 1))
+                    pygame.draw.rect(janela, Z_buffer[linha][coluna][0], (linha, coluna, 1, 1))
     else:
         for ponto in gerenciador_modelo.malha_pontos_perspectiva: # plota os pontos 
             pygame.draw.rect(janela, cor_ponto, (ponto[0], ponto[1], 1, 1))

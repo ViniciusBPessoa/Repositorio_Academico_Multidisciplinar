@@ -83,3 +83,41 @@ def somar_vetores(vetor1, vetor2):
     resultado = [vetor1[i] + vetor2[i] for i in range(len(vetor1))]
     
     return resultado
+
+def negativar_vetor(vetor):
+    # Negativa cada elemento do vetor
+    resultado = [-elemento for elemento in vetor]
+    
+    return resultado
+
+def multiplicar_matrizes_especial(matriz1, matriz2):
+    print(matriz1, matriz2)
+    if len(matriz1) != len(matriz2) or len(matriz1[0]) != len(matriz2[0]):
+        raise ValueError("As dimensões das matrizes não são compatíveis para multiplicação.")
+    
+    linhas = len(matriz1)
+    colunas = len(matriz1[0])
+    
+    # Verificar se matriz1 é uma matriz de vetores ou uma matriz normal
+    if isinstance(matriz1[0][0], list):
+        # Multiplicação de matrizes de vetores
+        resultado = []
+        for i in range(linhas):
+            linha = []
+            for j in range(colunas):
+                produto_componente = [matriz1[i][j][k] * matriz2[i][j][k] for k in range(3)]
+                linha.append(produto_componente)
+            resultado.append(linha)
+    else:
+        # Tratar matriz1 como uma matriz normal e realizar multiplicação
+        # Convertendo matriz1 temporariamente em uma matriz coluna
+        matriz1_coluna = [[[matriz1[i][j]] for i in range(linhas)] for j in range(colunas)]
+        resultado = []
+        for i in range(linhas):
+            linha = []
+            for j in range(colunas):
+                produto_componente = [matriz1_coluna[j][i][0] * matriz2[i][j][k] for k in range(3)]
+                linha.append(produto_componente)
+            resultado.append(linha)
+    
+    return resultado
