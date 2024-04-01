@@ -118,15 +118,15 @@ class Memoria:
         
         for x in self.memoria:
             if x == None:
-                self.table.add_rows([[posicao, "vazio", "vazio", "Não", 0]])
+                self.table.add_rows([[posicao, "vazio", "vazio", "Não", f"0/{self.tamanho_bloco}"]])
             
             else:
                 
                 if x[1] != self.tamanho_bloco:
-                    self.table.add_rows([[posicao, x[0].nome, "Sim", "Sim", x[1]]])
+                    self.table.add_rows([[posicao, x[0].nome, "Sim", "Sim", f"{x[1]}/{self.tamanho_bloco}"]])
                 
                 else:
-                    self.table.add_rows([[posicao, x[0].nome, "Sim", "Não", self.tamanho_bloco]])
+                    self.table.add_rows([[posicao, x[0].nome, "Sim", "Não", f"{self.tamanho_bloco}/{self.tamanho_bloco}"]])
             
             posicao += 1
 
