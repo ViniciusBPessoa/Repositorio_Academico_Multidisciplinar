@@ -22,16 +22,16 @@ class jogo_velha:
         ]
         winer = 'N'
         
-        for combination in victory_combinations:
-            for player in self.players:
-                verifyer = True
-                for analitc_position in combination:
+        for combination in victory_combinations:                        # passa por todas as combnaçoes de possiveis vitorias
+            for player in self.players:                                 # Passa por todos os players para verificar sua vitoria
+                verifyer = True                                         
+                for analitc_position in combination:                    # Para cada possivel combnação verifica se a mesma esta completa
                     if self.tabuleiro[analitc_position] != player:
-                        verifyer = False
+                        verifyer = False                                # caso errado
                         break
 
                 if verifyer:
-                    winer = player
+                    winer = player                                      # caso perfeito
                     break
     
         return winer
