@@ -1,5 +1,12 @@
 class jogo_velha:
     def __init__(self, players = ['X', 'O']) -> None:
+        """
+        Inicializa o objeto jogo_velha.
+
+        Parameters:
+        players (list, optional): Uma lista de dois elementos representando os jogadores do jogo. 
+            O padrão é ['X', 'O'].
+        """
         self.tabuleiro = ['N' for i in range(9)]
         self.players = players
 
