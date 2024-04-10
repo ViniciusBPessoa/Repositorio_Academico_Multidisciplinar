@@ -71,3 +71,4 @@ print("-"*50)
 
 test_tab.reset()
 print(test_tab.tabuleiro)
+
