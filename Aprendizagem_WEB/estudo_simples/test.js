@@ -6,3 +6,10 @@ function clicando(){
 function tuezin(){
     window.location.href = 'https://www.youtube.com/watch?v=TKqa-ZXGKYA';
 }
+
+var inicio = 0
+
+while (inicio < 10) {
+    document.write("</br>O valor é: " + inicio);
+    inicio++;
+}
