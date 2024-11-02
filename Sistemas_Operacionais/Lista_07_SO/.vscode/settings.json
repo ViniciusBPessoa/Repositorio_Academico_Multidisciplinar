@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./SO_lista_08/Lista_08_Particao_fixa/Pratica_01"
+    ]
+}
