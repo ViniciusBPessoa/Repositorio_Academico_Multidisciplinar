@@ -64,8 +64,6 @@ class jogo_velha:
         self.tabuleiro = ['N' for i in range(9)]
         self.players = players
 
-    def get_tat
-
 test_tab = jogo_velha()
 test_tab.tabuleiro = ['X', 'X', 'N', 'N', 'X', 'N', 'N', 'N', 'N']
 
