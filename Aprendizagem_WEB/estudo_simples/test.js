@@ -13,3 +13,21 @@ while (inicio < 10) {
     document.write("</br>O valor é: " + inicio);
     inicio++;
 }
+
+var nome = '';
+
+if (localStorage.nome == null) {
+    localStorage.nome = prompt('Qual é o seu nome?');
+}
+
+nome = localStorage.nome;
+
+document.getElementById("inicio").innerHTML = nome;
+
+function adcionar(...numeros){
+    let total = numeros.reduce((total, numero) => {
+        let soma = total + numero;
+        return soma;
+    });
+}
+  
