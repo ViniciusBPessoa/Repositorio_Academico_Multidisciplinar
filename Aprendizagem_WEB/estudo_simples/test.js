@@ -30,4 +30,5 @@ function adcionar(...numeros){
         return soma;
     });
 }
+
   
