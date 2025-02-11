@@ -1,0 +1,277 @@
+---
+title: "CPAD"
+output: html_document
+date: "2025-02-09"
+---
+
+## Atividade 12 {.tabset}
+
+### Questão 1
+```{r}
+MRT_1F <- c(517.1468515630205, 85.13094142168089, 30.333207896694553, 12.694776264558937, 3.3041601673945418, 1.1823111717498882, 1.1892293502386786)
+MRT_3F <- c(156.68929936163462, 11.540837783562276, 0.4512835621696538, 0.4509797929766453, 0.4502068233039181, 0.4496185276300172, 0.4543157082191288)
+MRT_5F <- c(83.90319666471157, 0.3068151086494968, 0.30522314133037304, 0.3072588968084928, 0.30655265997285697, 0.3055812715727718, 0.3053297166713006)
+MRT_10F <- c(29.55430642951759, 0.19832832665772515, 0.1971923924717474, 0.19796648905716516, 0.19615594370806338, 0.2034569237883263, 0.19617420889447737)
+MRT_15F <- c(11.317736530583566, 0.167364215666193, 0.16172168266811013, 0.16701085329580515, 0.1598052657153692, 0.1645934043532696, 0.16216563797118075)
+MRT_sem_F <- c(11.93430909937736, 0.6095414637034009, 0.6060645101029295, 0.612167181646899, 0.6146761002685637, 0.6096747087200697, 0.6125810476877268)
+clock <- c(0.1, 0.5, 1, 1.5, 2, 2.5, 3)
+```
+
+```{r}
+plot(clock, MRT_1F, type = "o", col = "blue", ylim = c(min(MRT_1F, MRT_3F, MRT_5F, MRT_10F, MRT_15F, MRT_sem_F), max(MRT_1F)), ylab = "Response Time (Sec)", xlab = "Time Between Things Requests (seconds)")
+lines(clock, MRT_3F, type = "o", col = "red")
+lines(clock, MRT_5F, type = "o", col = "green")
+lines(clock, MRT_10F, type = "o", col = "purple")
+lines(clock, MRT_15F, type = "o", col = "orange")
+lines(clock, MRT_sem_F, type = "o", col = "black")
+legend("topright", legend = c("1 Fog", "3 Fogs", "5 Fogs", "10 Fogs", "15 Fogs", "w/o Fog"), col = c("blue", "red", "green", "purple", "orange", "black"), lty = 1, pch = 1)
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_1F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "1 Fog"), col = c("gray", "black"), pch = c(0,15))
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_3F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "3 Fogs"), col = c("gray", "black"), pch = c(0,15))
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_5F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "5 Fogs"), col = c("gray", "black"), pch = c(0,15))
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_10F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "10 Fogs"), col = c("gray", "black"), pch = c(0,15))
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_15F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "15 Fogs"), col = c("gray", "black"), pch = c(0,15))
+```
+
+### Questão 2
+```{r}
+# Dados da tabela
+quality_rating <- c("Good", "Very Good", "Excellent")
+meal_price <- c("$10-19", "$20-29", "$30-39", "$40-49")
+``` 
+
+```{r}
+data <- matrix(c(53.8, 33.9, 2.6, 0.0,
+                 43.6, 54.2, 60.5, 21.4,
+                 2.6, 11.9, 36.8, 78.6),
+               nrow = 3, byrow = TRUE)
+
+rownames(data) <- quality_rating
+colnames(data) <- meal_price
+```
+
+```{r}
+barplot(data, beside = FALSE, col = c("#1f77b4", "#ff7f0e", "#2ca02c"),
+        xlab = "Meal Price", ylab = "Percentage",
+        main = "Quality Rating by Meal Price",
+        legend.text = rownames(data),
+        args.legend = list(x = "topright", inset = c(0, -0.31)))
+```
+
+
+### Questão 3
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+data("airquality")
+```
+
+```{r}
+dados_maio <- airquality %>% filter(Month == 5)
+
+dados_maio$Temp_C <- (dados_maio$Temp - 32) / 1.8
+```
+```{r}
+ggplot(dados_maio, aes(x = Temp_C)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 10, fill = "skyblue", color = "black", alpha = 0.7) +
+  geom_density(color = "red", linewidth = 1) +
+  labs(title = "Distribuicao das Temperaturas em Maio",
+       x = "Temperatura (C)",
+       y = "Densidade") +
+  theme_minimal()
+```
+
+
+### Questão 4
+Error 404, a página para o dataset não foi encontrada
+
+### Questão 5
+```{r}
+data("InsectSprays")
+```
+
+```{r}
+boxplot(count ~ spray, data = InsectSprays,
+        col = "yellow",  # Preencher as caixas com a cor "yellow"
+        outline = FALSE,  # Remover os outliers
+        main = "Contagem de Insetos por Tipo de Inseticida",
+        xlab = "Tipo de Inseticida",
+        ylab = "Contagem de Insetos")
+```
+
+
+
+### Questão 7
+```{r}
+library(dplyr)
+library(plotly)
+library(RColorBrewer)
+```
+
+```{r}
+netflix_data <- read.csv("netflix_titles.csv")
+
+single_country_data <- netflix_data %>%
+  filter(!is.na(country) & trimws(country) != "" & !grepl(",", country))
+
+country_count <- single_country_data %>%
+  group_by(country) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+top_10_countries <- head(country_count, 10)
+```
+
+Havia algo em 3 lugar, mas ele não havia nome, era um campo em branco, portanto, retirado.
+
+```{r}
+fig <- plot_ly(
+  data = top_10_countries, 
+  labels = ~country, 
+  values = ~count,    
+  type = "pie",       
+  textinfo = "label+percent",  
+  marker = list(colors = brewer.pal(10, "Set3"))
+)
+
+fig
+```
+
+
+### Questão 8
+```{r}
+library(dplyr)
+library(plotly)
+```
+
+```{r}
+netflix_data <- read.csv("netflix_titles.csv")
+
+netflix_data_clean <- netflix_data %>%
+  filter(!is.na(country) & country != "" & trimws(country) != "")
+
+head(netflix_data_clean)
+
+single_country_data <- netflix_data_clean %>%
+  filter(!grepl(",", country))
+
+country_count <- single_country_data %>%
+  group_by(country) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+head(country_count)
+
+top_10_countries <- head(country_count, 10)
+```
+
+Havia algo em 3 lugar, mas ele não havia nome, era um campo em branco, portanto, retirado.
+
+```{r}
+table <- plot_ly(
+  type = "table",
+  header = list(
+    values = c("País", "Total de conteúdos"),
+    align = c("center", "center"),
+    font = list(size = 12, color = "white"),
+    fill = list(color = "gray")
+  ),
+  cells = list(
+    values = rbind(top_10_countries$country, top_10_countries$count),
+    align = c("center", "center"),
+    font = list(size = 12),
+    fill = list(color = c("white", "lightgray"))
+  )
+)
+
+table
+```
+
+
+### Questão 9
+```{r}
+library(dplyr)
+library(plotly)
+```
+
+```{r}
+netflix_data <- read.csv("netflix_titles.csv")
+
+netflix_data <- netflix_data %>%
+  filter(!is.na(release_year) & !is.na(type))
+
+netflix_data$decade <- floor(netflix_data$release_year / 10) * 10
+
+content_by_decade <- netflix_data %>%
+  group_by(decade, type) %>%
+  summarise(count = n()) %>%
+  arrange(decade)
+```
+
+Infelizmente não consegui descobrir o por que das linhas não aparecerem por mais que o mode 'lines+markers' esteja setado...
+
+```{r}
+fig <- plot_ly(content_by_decade, 
+               x = ~decade, 
+               y = ~count, 
+               color = ~type, 
+               colors = c("blue", "yellow"), 
+               type = 'scatter', 
+               mode = 'lines+markers',  # Adiciona tanto as linhas quanto os pontos
+               line = list(shape = "linear", width = 3)) %>%  # Forma das linhas e largura
+  layout(xaxis = list(title = "Década"),
+         yaxis = list(title = "Quantidade de Conteúdo"))
+
+fig
+```
+
+
+### Questão 10
+```{r}
+library(dplyr)
+library(plotly)
+```
+
+```{r}
+netflix_data <- read.csv("netflix_titles.csv")
+
+netflix_data_filtered <- netflix_data %>%
+  filter(release_year >= 2000 & release_year <= 2010) %>%
+  mutate(first_genre = sapply(strsplit(as.character(listed_in), ","), `[`, 1)) %>%
+  filter(first_genre %in% c("Dramas", "Action & Adventure", "Comedies"))
+
+netflix_data_count <- netflix_data_filtered %>%
+  group_by(release_year, first_genre) %>%
+  summarise(count = n(), .groups = 'drop')
+```
+
+```{r}
+plot_ly(netflix_data_count, x = ~release_year, y = ~count, color = ~first_genre, type = 'bar', barmode = 'group') %>%
+  layout(title = "Quantidade de Filmes Lançados (2000-2010) por Gênero",
+         xaxis = list(title = "Ano de Lançamento"),
+         yaxis = list(title = "Quantidade de Filmes"),
+         barmode = 'group')
+```
+

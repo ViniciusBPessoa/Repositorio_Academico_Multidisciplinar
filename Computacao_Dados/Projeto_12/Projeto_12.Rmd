@@ -1,0 +1,247 @@
+---
+title: "Projeto"
+output: html_document
+date: "2025-02-11"
+---
+
+## Atividade 12 {.tabset}
+
+### Questão 1
+
+```{r}
+MRT_1F <- c(517.1468515630205, 85.13094142168089, 30.333207896694553, 12.694776264558937, 3.3041601673945418, 1.1823111717498882, 1.1892293502386786)
+MRT_3F <- c(156.68929936163462, 11.540837783562276, 0.4512835621696538, 0.4509797929766453, 0.4502068233039181, 0.4496185276300172, 0.4543157082191288)
+MRT_5F <- c(83.90319666471157, 0.3068151086494968, 0.30522314133037304, 0.3072588968084928, 0.30655265997285697, 0.3055812715727718, 0.3053297166713006)
+MRT_10F <- c(29.55430642951759, 0.19832832665772515, 0.1971923924717474, 0.19796648905716516, 0.19615594370806338, 0.2034569237883263, 0.19617420889447737)
+MRT_15F <- c(11.317736530583566, 0.167364215666193, 0.16172168266811013, 0.16701085329580515, 0.1598052657153692, 0.1645934043532696, 0.16216563797118075)
+MRT_sem_F <- c(11.93430909937736, 0.6095414637034009, 0.6060645101029295, 0.612167181646899, 0.6146761002685637, 0.6096747087200697, 0.6125810476877268)
+clock <- c(0.1, 0.5, 1, 1.5, 2, 2.5, 3)
+```
+
+```{r}
+plot(clock, MRT_1F, type = "o", col = "black", pch = 4,
+     ylim = c(min(MRT_1F, MRT_3F, MRT_5F, MRT_10F, MRT_15F, MRT_sem_F), 
+              max(MRT_1F)), 
+     ylab = "Response Time (Sec)", 
+     xlab = "Time Between Things Requests (seconds)")
+
+lines(clock, MRT_3F, type = "o", col = "yellow", pch = 3)
+lines(clock, MRT_5F, type = "o", col = "red", pch = 1) 
+lines(clock, MRT_10F, type = "o", col = "blue", pch = 2)
+lines(clock, MRT_15F, type = "o", col = "purple", pch = 5)
+lines(clock, MRT_sem_F, type = "o", col = "green", pch = 4) 
+
+legend("topright", legend = c("1 Fog", "3 Fogs", "5 Fogs", "10 Fogs", "15 Fogs", "w/o Fog"), 
+       col = c("black", "yellow", "red", "blue", "purple", "green"), 
+       pch = c(4, 3, 1, 2, 5, 4),  # Define os símbolos corretamente
+       lty = 1)
+
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_1F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "1 Fog"), col = c("gray", "black"), pch = c(0,15))
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_3F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "3 Fogs"), col = c("gray", "black"), pch = c(0,15))
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_5F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "5 Fogs"), col = c("gray", "black"), pch = c(0,15))
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_10F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "10 Fogs"), col = c("gray", "black"), pch = c(0,15))
+```
+
+```{r}
+barplot(matrix(c(MRT_sem_F, MRT_15F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
+legend("topright", legend = c("w/o Fog", "15 Fogs"), col = c("gray", "black"), pch = c(0,15))
+```
+### Questão 2
+```{r}
+dados <- data.frame(
+  Qualidade = c("Good", "Very Good", "Excellent"),
+  `10-19` = c(53.8, 43.6, 2.6),
+  `20-29` = c(33.9, 54.2, 11.9),
+  `30-39` = c(2.6, 60.5, 36.8),
+  `40-49` = c(0.0, 21.4, 78.6)
+)
+```
+
+```{r}
+barplot(data, beside = FALSE, 
+        col = c("#4C72B0", "#DD8452", "#55A868"),  # Azul, laranja e verde suaves
+        xlab = "Meal Price", 
+        ylab = "Percentage",
+        main = "Quality Rating by Meal Price",
+        legend.text = rownames(data),
+        args.legend = list(x = "topright", inset = c(0, -0.31)))
+
+```
+### Questão 3
+
+```{r}
+airquality$Temp_C <- (airquality$Temp - 32) / 1.8
+dados_maio <- subset(airquality, Month == 5, select = Temp_C)
+```
+
+```{r}
+ggplot(dados_maio, aes(x = Temp_C)) +
+  geom_histogram(aes(y = ..density..), binwidth = 1, fill = "blue", color = "black", alpha = 0.7) +
+  geom_density(color = "red", size = 1.2) +
+  labs(title = "Histograma das Temperaturas de Maio",
+       x = "Temperatura (°C)",
+       y = "Densidade") +
+  theme_minimal()
+```
+### Questão 4
+
+The requested URL was not found on this server.
+
+### Questão 5
+```{r}
+data("InsectSprays")
+```
+
+```{r}
+ggplot(InsectSprays, aes(x = spray, y = count, fill = spray)) +
+  geom_boxplot(outlier.shape = NA, fill = "yellow", color = "black") +
+  labs(title = "Boxplot das Contagens de Insetos por Inseticida",
+       x = "Tipo de Inseticida",
+       y = "Contagem de Insetos") +
+  theme_minimal()
+```
+### Questão 7
+
+### Questão 7
+```{r}
+library(dplyr)
+library(plotly)
+
+netflix_data <- read.csv("netflix_titles.csv")
+
+head(netflix_data)
+```
+
+```{r}
+netflix_single_country <- netflix_data %>%
+  filter(!is.na(country)) %>%
+  filter(grepl(",", country) == FALSE)
+
+country_counts <- netflix_single_country %>%
+  group_by(country) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+top_10_countries <- head(country_counts, 10)
+```
+
+```{r}
+fig <- plot_ly(
+  data = top_10_countries,
+  labels = ~country,
+  values = ~count,
+  type = 'pie',
+  textinfo = 'label+percent',
+  hoverinfo = 'label+value'
+)
+
+fig
+
+```
+### Questão 8
+```{r}
+library(dplyr)
+library(tidyr)
+library(plotly)
+```
+
+```{r}
+top_10_countries <- netflix_data %>%
+  filter(!is.na(country)) %>%
+  separate_rows(country, sep = ",") %>%
+  group_by(country) %>%
+  summarise(total_content = n()) %>%
+  top_n(10, total_content) %>%
+  arrange(desc(total_content))
+```
+
+Havia algo em 3 lugar, mas ele não havia nome, era um campo em branco, portanto, retirado.
+
+```{r}
+fig <- plot_ly(
+  type = 'table',
+  header = list(
+    values = c("País", "Total de Conteúdos"),
+    align = c('center', 'center'),
+    font = list(color = 'white', size = 12),
+    fill = list(color = 'gray')
+  ),
+  cells = list(
+    values = list(top_10_countries$country, top_10_countries$total_content),
+    align = c('center', 'center'),
+    font = list(size = 12),
+    height = 30
+  )
+)
+
+fig
+```
+### Questão 9
+```{r}
+netflix_data <- netflix_data %>%
+  mutate(decade = floor(release_year / 10) * 10)
+
+netflix_data_filtered <- netflix_data %>%
+  filter(!is.na(release_year)) %>%
+  filter(type %in% c("Movie", "TV Show"))
+
+content_by_decade <- netflix_data_filtered %>%
+  group_by(decade, type) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  arrange(decade)
+```
+
+```{r}
+fig <- plot_ly(content_by_decade, 
+               x = ~decade, 
+               y = ~count, 
+               color = ~type, 
+               colors = c("orange", "blue"), 
+               type = 'scatter', 
+               mode = 'lines+markers', 
+               marker = list(size = 8)) %>%
+  layout(title = "Quantidade de Conteúdo por Década",
+         xaxis = list(title = "Década"),
+         yaxis = list(title = "Quantidade de Conteúdo"),
+         showlegend = TRUE)
+
+# Exibir o gráfico
+fig
+```
+### Questão 10
+```{r}
+netflix_data_filtered <- netflix_data %>%
+  filter(release_year >= 2000 & release_year <= 2010) %>%
+  mutate(first_genre = sapply(strsplit(as.character(listed_in), ","), `[`, 1)) %>%
+  filter(first_genre %in% c("Dramas", "Action & Adventure", "Comedies"))
+
+netflix_data_count <- netflix_data_filtered %>%
+  group_by(release_year, first_genre) %>%
+  summarise(count = n(), .groups = 'drop')
+```
+
+```{r}
+plot_ly(netflix_data_count, x = ~release_year, y = ~count, color = ~first_genre, 
+        type = 'bar', barmode = 'group', 
+        colors = c("blue", "green", "orange")) %>%
+  layout(title = "Quantidade de Filmes Lançados (2000-2010) por Gênero",
+         xaxis = list(title = "Ano de Lançamento"),
+         yaxis = list(title = "Quantidade de Lançamentos"),
+         barmode = 'group')
+```
