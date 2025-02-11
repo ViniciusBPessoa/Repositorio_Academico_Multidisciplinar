@@ -9,6 +9,8 @@ date: "2025-02-11"
 ### Questão 1
 
 ```{r}
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
+
 MRT_1F <- c(517.1468515630205, 85.13094142168089, 30.333207896694553, 12.694776264558937, 3.3041601673945418, 1.1823111717498882, 1.1892293502386786)
 MRT_3F <- c(156.68929936163462, 11.540837783562276, 0.4512835621696538, 0.4509797929766453, 0.4502068233039181, 0.4496185276300172, 0.4543157082191288)
 MRT_5F <- c(83.90319666471157, 0.3068151086494968, 0.30522314133037304, 0.3072588968084928, 0.30655265997285697, 0.3055812715727718, 0.3053297166713006)
@@ -62,7 +64,9 @@ legend("topright", legend = c("w/o Fog", "10 Fogs"), col = c("gray", "black"), p
 barplot(matrix(c(MRT_sem_F, MRT_15F), nrow = 2, byrow = TRUE), beside = TRUE, col = c("#E6E6E6", "#666666"), log = "y", names.arg = clock, ylab = "Response Time (s)", xlab = "Time between Things requests")
 legend("topright", legend = c("w/o Fog", "15 Fogs"), col = c("gray", "black"), pch = c(0,15))
 ```
+
 ### Questão 2
+
 ```{r}
 dados <- data.frame(
   Qualidade = c("Good", "Very Good", "Excellent"),
@@ -71,19 +75,27 @@ dados <- data.frame(
   `30-39` = c(2.6, 60.5, 36.8),
   `40-49` = c(0.0, 21.4, 78.6)
 )
+dados_matrix <- as.matrix(dados[, 2:5])
+
 ```
 
 ```{r}
-barplot(data, beside = FALSE, 
-        col = c("#4C72B0", "#DD8452", "#55A868"),  # Azul, laranja e verde suaves
+barplot(dados_matrix, beside = FALSE, 
+        col = c("#4C72B0", "#DD8452", "#55A868"),
         xlab = "Meal Price", 
         ylab = "Percentage",
         main = "Quality Rating by Meal Price",
-        legend.text = rownames(data),
+        legend.text = dados$Qualidade,
         args.legend = list(x = "topright", inset = c(0, -0.31)))
 
 ```
+
 ### Questão 3
+
+```{r}
+library(ggplot2)
+library(dplyr)
+```
 
 ```{r}
 airquality$Temp_C <- (airquality$Temp - 32) / 1.8
@@ -116,7 +128,8 @@ ggplot(InsectSprays, aes(x = spray, y = count, fill = spray)) +
        y = "Contagem de Insetos") +
   theme_minimal()
 ```
-### Questão 7
+
+### Questão 6
 
 ### Questão 7
 ```{r}
@@ -170,8 +183,6 @@ top_10_countries <- netflix_data %>%
   top_n(10, total_content) %>%
   arrange(desc(total_content))
 ```
-
-Havia algo em 3 lugar, mas ele não havia nome, era um campo em branco, portanto, retirado.
 
 ```{r}
 fig <- plot_ly(
@@ -239,7 +250,7 @@ netflix_data_count <- netflix_data_filtered %>%
 ```{r}
 plot_ly(netflix_data_count, x = ~release_year, y = ~count, color = ~first_genre, 
         type = 'bar', barmode = 'group', 
-        colors = c("blue", "green", "orange")) %>%
+        colors = c("blue", "green", "red")) %>%
   layout(title = "Quantidade de Filmes Lançados (2000-2010) por Gênero",
          xaxis = list(title = "Ano de Lançamento"),
          yaxis = list(title = "Quantidade de Lançamentos"),
