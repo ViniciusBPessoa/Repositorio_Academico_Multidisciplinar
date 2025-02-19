@@ -1,0 +1,21 @@
+---
+title: "ProjetoFinal"
+output: html_document
+date: "2025-02-19"
+---
+
+```{r}
+getwd()
+setwd("C:/Users/Pichau/Desktop/Faculdade/Projects/Repositorio_Academico_Multidisciplinar/Computacao_Dados/Projeto_FINAL")
+
+dados <- read.csv("Crime_Data_from_2020_to_Present.csv")
+```
+
+```{r}
+print(head(dados))
+```
+
+```{r}
+
+```
+
