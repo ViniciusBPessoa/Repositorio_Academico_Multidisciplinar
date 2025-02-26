@@ -1,21 +1,677 @@
 ---
-title: "ProjetoFinal"
-output: html_document
-date: "2025-02-19"
+title: "Análise de Dados de Crimes em Los Angeles (2020-Presente)"
+author: "Vinícius Pessoa"
+date: "25/02/2025"
+output: 
+  html_document:
+    theme: darkly  # Escolha um tema (outras opções: journal, flatly, etc.)
+    highlight: tango  # Estilo de destaque de código
+    toc: true         # Adiciona uma tabela de conteúdo
+    toc_float: true   # Tabela de conteúdo flutuante
 ---
 
-```{r}
-getwd()
-setwd("C:/Users/Pichau/Desktop/Faculdade/Projects/Repositorio_Academico_Multidisciplinar/Computacao_Dados/Projeto_FINAL")
+# Introdução {.tabset}
 
+## 1.1 Declaração do Problema
+
+A cidade de Los Angeles é uma das maiores e mais populosas dos Estados Unidos, com uma diversidade de bairros e uma dinâmica urbana complexa.
+Compreender os padrões de criminalidade é essencial para a formulação de políticas públicas eficazes, alocação de recursos de segurança e conscientização da comunidade.
+Este relatório tem como objetivo analisar os dados de crimes reportados em Los Angeles a partir de 2020, identificando tendências, áreas de maior incidência e fatores associados.
+
+## 1.2 Abordagem do Problema
+
+Para abordar essa questão, utilizarei o conjunto de dados **Crime Data from 2020 to Present**, disponibilizado pelo Los Angeles Police Department (LAPD).
+A metodologia inclui a limpeza e preparação dos dados, análise exploratória, criação de visualizações e identificação de padrões relevantes.
+
+## 1.3 Técnica Adotada
+
+A técnica adotada inclui: - Análise temporal para identificar tendências de criminalidade ao longo do tempo.
+- Análise geográfica para mapear áreas de maior incidência de crimes.
+- Exploração de correlações entre tipos de crimes e variáveis como localização e horário.
+- Criação de novas variáveis, como taxa de crimes por região.
+
+## 1.4 Benefícios da Análise
+
+Esta análise será útil para: - Órgãos de segurança pública, que podem utilizar os insights para alocar recursos de forma mais eficiente.
+- Comunidades locais, que podem se conscientizar sobre os crimes mais comuns em suas áreas.
+- Pesquisadores e acadêmicos, que podem utilizar os dados para estudos mais aprofundados.
+
+------------------------------------------------------------------------
+
+# Pacotes necessários
+
+```{r, warning=FALSE, message=FALSE}
+Sys.setlocale("LC_ALL", "Portuguese_Brazil.1252")
+library(knitr)
+library(ggplot2)
+library(dplyr)
+library(rmdformats)
+library(leaflet)
+library(leaflet.extras)
+library(lubridate)
+```
+
+| **Biblioteca**      | **Função Principal**                                      |
+|---------------------|-----------------------------------------------------------|
+| ggplot2             | Visualização de dados                                     |
+| dplyr               | Manipulação de dados                                      |
+| rmdformats          | Formatação de documentos R Markdown                       |
+| leaflet             | Criação de mapas interativos                              |
+| leaflet.extras      | Extensões de mapas interativos                            |
+| lubridate           | Manipulação de datas e horários                           |
+
+
+# Preparação dos Dados
+
+## 2.1 Compreenção dos dados
+
+```{r echo=FALSE}
+#getwd()
+setwd("C:/Users/Pichau/Desktop/Faculdade/Projects/Repositorio_Academico_Multidisciplinar/Computacao_Dados/Projeto_FINAL")
+#setwd("C:/Faculdade/Repositorios/Repositorio_Academico_Multidisciplinar/Computacao_Dados/Projeto_FINAL")
 dados <- read.csv("Crime_Data_from_2020_to_Present.csv")
 ```
 
+Listando as colunas presentes no dataset.
+
 ```{r}
-print(head(dados))
+nomes_das_colunas <- colnames(dados)
+print(nomes_das_colunas)
+```
+
+Para cada coluna presente acima uma breve explicação de seu conteúdo.
+
+## 2.2 Descrição das Colunas
+
+Abaixo está uma explicação detalhada das colunas presentes no conjunto de dados **Crime Data from 2020 to Present**.
+
+### **Identificação do Relatório**
+
+-   **`DR_NO`**
+    -   **Descrição:** Número do relatório do crime (*DR = "Division of Records"* ou *"Data Report"*).\
+    -   **Tipo:** Texto ou número.
+
+### **Datas e Horários**
+
+-   **`Date.Rptd`**
+    -   **Descrição:** Data em que o crime foi reportado à polícia.\
+    -   **Tipo:** Data.
+-   **`DATE.OCC`**
+    -   **Descrição:** Data em que o crime ocorreu.\
+    -   **Tipo:** Data.
+-   **`TIME.OCC`**
+    -   **Descrição:** Hora em que o crime ocorreu.\
+    -   **Tipo:** Número (formato de 24 horas).
+
+### **Localização**
+
+-   **`AREA`**
+    -   **Descrição:** Código numérico da área ou distrito policial onde o crime ocorreu.\
+    -   **Tipo:** Número.
+-   **`AREA.NAME`**
+    -   **Descrição:** Nome da área ou distrito policial onde o crime ocorreu.\
+    -   **Tipo:** Texto.
+-   **`Rpt.Dist.No`**
+    -   **Descrição:** Número do distrito de relatório (pode ser um subdistrito dentro de uma área).\
+    -   **Tipo:** Número.
+
+### **Classificação do Crime**
+
+-   **`Part.1.2`**
+    -   **Descrição:** Classificação do crime em *Part 1* ou *Part 2*.\
+    -   **Tipo:** Número ou texto.\
+    -   **Valores:**
+        -   **Part 1:** Crimes mais graves (homicídio, roubo, agressão, etc.).\
+        -   **Part 2:** Crimes menos graves (vandalismo, fraude, etc.).
+-   **`Crm.Cd`**
+    -   **Descrição:** Código do tipo de crime.\
+    -   **Tipo:** Número.
+-   **`Crm.Cd.Desc`**
+    -   **Descrição:** Descrição do tipo de crime.\
+    -   **Tipo:** Texto.
+-   **`Mocodes`**
+    -   **Descrição:** Códigos adicionais relacionados ao crime (*MO = "Modus Operandi"*).\
+    -   **Tipo:** Texto.
+
+### **Informações da Vítima**
+
+-   **`Vict.Age`**
+    -   **Descrição:** Idade da vítima.\
+    -   **Tipo:** Número.
+-   **`Vict.Sex`**
+    -   **Descrição:** Sexo da vítima.\
+    -   **Tipo:** Texto.
+-   **`Vict.Descent`**
+    -   **Descrição:** Descendência ou etnia da vítima.\
+    -   **Tipo:** Texto.
+
+### **Local do Crime**
+
+-   **`Premis.Cd`**
+    -   **Descrição:** Código do local onde o crime ocorreu (*premises = local*).\
+    -   **Tipo:** Número.
+-   **`Premis.Desc`**
+    -   **Descrição:** Descrição do local onde o crime ocorreu.\
+    -   **Tipo:** Texto.
+
+### **Arma Utilizada**
+
+-   **`Weapon.Used.Cd`**
+    -   **Descrição:** Código da arma utilizada no crime (se aplicável).\
+    -   **Tipo:** Número.
+-   **`Weapon.Desc`**
+    -   **Descrição:** Descrição da arma utilizada no crime.\
+    -   **Tipo:** Texto.
+
+### **Status do Caso**
+
+-   **`Status`**
+    -   **Descrição:** Código do status do caso.\
+    -   **Tipo:** Texto ou número.
+-   **`Status.Desc`**
+    -   **Descrição:** Descrição do status do caso.\
+    -   **Tipo:** Texto.
+
+### **Crimes Relacionados**
+
+-   **`Crm.Cd.1`, `Crm.Cd.2`, `Crm.Cd.3`, `Crm.Cd.4`**
+    -   **Descrição:** Códigos adicionais de crimes relacionados (se houver múltiplos crimes na mesma ocorrência).\
+    -   **Tipo:** Número.
+
+### **Localização Geográfica**
+
+-   **`LOCATION`**
+    -   **Descrição:** Endereço ou localização aproximada do crime.\
+    -   **Tipo:** Texto.
+-   **`Cross.Street`**
+    -   **Descrição:** Rua transversal ou referência de localização.\
+    -   **Tipo:** Texto.
+-   **`LAT`**
+    -   **Descrição:** Latitude da localização do crime.\
+    -   **Tipo:** Número.
+-   **`LON`**
+    -   **Descrição:** Longitude da localização do crime.\
+    -   **Tipo:** Número.
+
+## 2.3 Limpesa de dados
+
+Desta forma torna-se notável que podemos remover algumas colunas que são demonstradas de forma redundante, sendo assim podem ser removidas.
+
+```{r}
+dados <- dados[, !(names(dados) %in% c("DR_NO", "Rpt.Dist.No", "Status", "Premis.Cd", "Weapon.Used.Cd"))]
+```
+
+### **1. DR_NO** (Número do Relatório do Crime)
+
+-   **Motivo da remoção:**
+    -   É apenas um identificador único de cada ocorrência.\
+    -   Não agrega valor para análises estatísticas ou padrões de criminalidade.
+
+### **2. Rpt.Dist.No** (Número do Distrito de Relatório)
+
+-   **Motivo da remoção:**
+    -   Pode ser redundante, pois já temos `AREA` e `AREA.NAME` representando a localização do crime.\
+    -   A granularidade excessiva pode não ser útil para uma análise geral.
+
+### **3. Status** (Código do Status do Caso)
+
+-   **Motivo da remoção:**
+    -   Existe a coluna `Status.Desc`, que já fornece a descrição do status do caso de forma mais interpretável.\
+    -   Manter apenas uma coluna evita redundância e melhora a legibilidade dos dados.
+
+### **4. Premis.Cd** (Código do Local do Crime)
+
+-   **Motivo da remoção:**
+    -   `Premis.Desc` já contém a descrição do local do crime de forma mais clara.\
+    -   Códigos numéricos sem uma legenda clara dificultam a interpretação.
+
+### **5. Weapon.Used.Cd** (Código da Arma Utilizada)
+
+-   **Motivo da remoção:**
+    -   `Weapon.Desc` já fornece a descrição completa da arma utilizada no crime.\
+    -   Manter apenas a descrição melhora a compreensão dos dados sem perda de informação relevante.
+    
+## 2.4 Reformulando a coluna de etinias 
+
+Para melhor identificação de seus itens já que a mesma era marcada apenas no formato de letras, sem sua categoria bem demarcada.
+
+```{r}
+# Dicionário de códigos de descendência
+descendencia_dict <- c(
+  "A" = "Outros Asiáticos",
+  "B" = "Negros/Afro-americanos",
+  "C" = "Chineses",
+  "D" = "Cambojanos",
+  "F" = "Filipinos",
+  "G" = "Guamanianos",
+  "H" = "Hispânicos/Latinos",
+  "I" = "Índios Americanos",
+  "J" = "Japoneses",
+  "K" = "Coreanos",
+  "L" = "Laocianos",
+  "O" = "Outros",
+  "P" = "Ilhas do Pacífico",
+  "S" = "Samoanos",
+  "U" = "Havaianos",
+  "V" = "Vietnamitas",
+  "W" = "Brancos",
+  "Z" = "Asiáticos"
+)
 ```
 
 ```{r}
+# Substituir códigos por descrições
+dados <- dados %>%
+  mutate(Vict.Descent = ifelse(Vict.Descent %in% names(descendencia_dict),
+                              descendencia_dict[Vict.Descent],
+                              Vict.Descent))
+```
+    
+# Análise exploratória
+
+Nesta seção, exploramos os dados de crimes em Los Angeles de 2020 até o presente, utilizando visualizações e estatísticas descritivas para identificar padrões e tendências.
+
+## Distribuição de Idades das Vítimas
+
+O primeiro passo na análise foi examinar a distribuição das idades das vítimas, excluindo registros com idades ausentes ou iguais a zero. A média e a mediana das idades foram calculadas para fornecer uma visão geral das vítimas.
+
+```{r}
+dados_filtrados <- dados[!is.na(dados$Vict.Age) & dados$Vict.Age > 0, ]
+
+media_idade <- mean(dados_filtrados$Vict.Age, na.rm = TRUE)
+mediana_idade <- median(dados_filtrados$Vict.Age, na.rm = TRUE)
+
+ggplot(dados_filtrados, aes(x = Vict.Age)) +
+  geom_histogram(binwidth = 5, fill = "#ff6f61", color = "#333333", alpha = 0.8) +
+  geom_vline(aes(xintercept = media_idade), color = "blue", linetype = "dashed", size = 1) +
+  geom_vline(aes(xintercept = mediana_idade), color = "green", linetype = "dotted", size = 1) +
+  annotate("text", x = media_idade + 10, y = 5000, label = paste("Media:", round(media_idade, 1)), color = "blue") +
+  annotate("text", x = mediana_idade - 10, y = 5000, label = paste("Mediana:", mediana_idade), color = "green") +
+  labs(
+    title = "Dados filtrados para idades das vitimas (maiores que 0)",
+    x = "Idade da Vitima",
+    y = "Frequencia",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    panel.grid.major = element_line(color = "gray80"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+## Distribuição dos Tipos de Armas
+
+Em seguida, foi analisada a frequência dos tipos de armas utilizadas nos crimes, destacando os 10 tipos mais comuns.
+
+```{r}
+armas_frequencia <- dados %>%
+  filter(!is.na(Weapon.Desc) & Weapon.Desc != "") %>%  # Remove valores NA e vazios
+  group_by(Weapon.Desc) %>%
+  summarise(Contagem = n()) %>%
+  arrange(desc(Contagem)) %>%
+  top_n(10)
+
+ggplot(armas_frequencia, aes(x = reorder(Weapon.Desc, Contagem), y = Contagem)) +
+  geom_bar(stat = "identity", fill = "blue", alpha = 0.8) +  # Cor moderna
+  geom_text(aes(label = Contagem), hjust = -0.2, color = "#333333", size = 4) +  # Rótulos nas barras
+  labs(
+    title = "Dados filtrados para os tipos de armas mais frequentes",
+    x = "Tipo de Arma",
+    y = "Numero de Ocorrencias",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  coord_flip() +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5),
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    panel.grid.major = element_line(color = "gray80"),
+    panel.grid.minor = element_blank(),
+    plot.caption = element_text(size = 10, hjust = 1)
+  )
+```
+
+## Distribuição dos Crimes por Área
+
+Para entender a concentração dos crimes, foi feita uma análise da distribuição de crimes por área.
+
+```{r}
+crimes_por_area <- dados %>%
+  group_by(AREA.NAME) %>%
+  summarise(Contagem = n()) %>%
+  arrange(desc(Contagem))
+
+ggplot(crimes_por_area, aes(x = reorder(AREA.NAME, Contagem), y = Contagem)) +
+  geom_bar(stat = "identity", fill = "blue", alpha = 0.8) +
+  labs(
+    title = "Distribuição de Crimes por Área em Los Angeles (2020-Presente)",
+    x = "Área",
+    y = "Número de Crimes",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  coord_flip() +
+  theme_minimal()
+```
+
+## Mapa de Densidade de Crimes
+
+Uma visualização de mapa foi gerada para mostrar a concentração de crimes em diferentes regiões de Los Angeles, para melhorar a definição anterior.
+
+```{r}
+dados_filtrados <- dados %>%
+  filter(!is.na(LAT) & !is.na(LON))  # Remove valores NA
+
+leaflet(dados_filtrados) %>%
+  addTiles() %>%
+  addHeatmap(lng = ~LON, lat = ~LAT, radius = 8) %>%
+  addLegend("bottomright", colors = "#ff6f61", labels = "Densidade de Crimes")
+```
+
+## Tendência Temporal dos Crimes
+
+Foi analisada a tendência temporal dos crimes, com foco no número de crimes por mês.
+
+```{r}
+crimes_por_mes <- dados %>%
+  filter(!is.na(DATE.OCC)) %>%  # Remove valores NA
+  mutate(Mes = floor_date(as.Date(DATE.OCC, format = "%m/%d/%Y"), "month")) %>%
+  group_by(Mes) %>%
+  summarise(Contagem = n())
+
+ggplot(crimes_por_mes, aes(x = Mes, y = Contagem)) +
+  geom_line(color = "blue", size = 1) +
+  labs(
+    title = "Tendência Temporal de Crimes em Los Angeles (2020-Presente)",
+    x = "Anos",
+    y = "Número de Crimes",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  theme_minimal()
+```
+
+## Tipos de Crimes
+
+Além disso, foram analisados os tipos de crimes mais comuns, destacando os 10 mais frequentes.
+
+```{r}
+crimes_por_tipo <- dados %>%
+  filter(!is.na(Crm.Cd.Desc) & Crm.Cd.Desc != "") %>%  # Remove valores NA e vazios
+  group_by(Crm.Cd.Desc) %>%
+  summarise(Contagem = n()) %>%
+  arrange(desc(Contagem)) %>%
+  top_n(10)
+
+ggplot(crimes_por_tipo, aes(x = reorder(Crm.Cd.Desc, Contagem), y = Contagem)) +
+  geom_bar(stat = "identity", fill = "blue", alpha = 0.8) +
+  labs(
+    title = "Top 10 Tipos de Crimes em Los Angeles (2020-Presente)",
+    x = "Tipo de Crime",
+    y = "Número de Ocorrências",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  coord_flip() +
+  theme_minimal()
+```
+
+## Distribuição dos Crimes por Hora
+
+A análise da distribuição dos crimes ao longo do dia também foi realizada, para identificar em que períodos do dia os crimes mais ocorrem.
+
+```{r}
+ggplot(dados, aes(x = TIME.OCC)) +
+  geom_histogram(binwidth = 100, fill = "blue", alpha = 0.8) +
+  labs(
+    title = "Distribuição de Crimes por Hora do Dia em Los Angeles (2020-Presente)",
+    x = "Hora do Dia (Formato 24h)",
+    y = "Número de Crimes",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  theme_minimal()
+```
+
+Além de olharmos para a hora unicamente vale a pena sabermos em que dias da semana um cidadão estaria mais suscetível a sofrer um crime.
+
+```{r}
+dados_filtrados <- dados %>%
+  filter(!is.na(DATE.OCC) & !is.na(TIME.OCC)) %>%  # Remove valores NA
+  mutate(Dia_Semana = wday(as.Date(DATE.OCC, format = "%m/%d/%Y"), label = TRUE),  # Extrai o dia da semana
+         Hora = floor(TIME.OCC / 100))  # Converte a hora para formato de 24h
+
+ggplot(dados_filtrados, aes(x = Dia_Semana, y = Hora, fill = ..count..)) +
+  geom_bin2d(binwidth = c(1, 1)) +
+  scale_fill_gradient(low = "white", high = "red") +  # Remove o parêntese extra aqui
+  labs(
+    title = "Distribuição de Crimes por Dia da Semana e Hora em Los Angeles (2020-Presente)",
+    x = "Dia da Semana",
+    y = "Hora do Dia",
+    fill = "Número de Crimes",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  theme_minimal()
 
 ```
 
+Ainda sobre as vitimas, pode-se saber quem esta mais sucetivel a crimes.
+
+```{r}
+# Remover valores irrelevantes para Vict.Sex
+dados_filtrados <- dados %>%
+  filter(Vict.Sex %in% c("F", "H", "M", "X"))
+
+# Criar o gráfico
+ggplot(dados_filtrados, aes(x = Vict.Age, fill = Vict.Sex)) +
+  geom_histogram(binwidth = 5, alpha = 0.7, color = "black") +
+  facet_wrap(~ Vict.Sex, scales = "free") +
+  labs(
+    title = "Distribuição de Idades das Vítimas por Sexo em Los Angeles (2020-Presente)",
+    x = "Idade da Vítima",
+    y = "Frequência",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text = element_text(size = 12, face = "bold"),
+    legend.position = "none"
+  ) +
+  scale_fill_manual(values = c("F" = "#ff69b4", "H" = "#1f77b4", "M" = "#ff7f0e", "X" = "#2ca02c"))  # Cores personalizadas
+
+```
+
+Agora Pode-se mostrar a que etnia uma pessoa que sofreu crime pertence
+
+```{r}
+# Preparar os dados
+crimes_por_descendencia <- dados %>%
+  filter(!is.na(Vict.Descent)) %>%  # Remove valores NA
+  group_by(Vict.Descent) %>%
+  summarise(Contagem = n()) %>%
+  arrange(desc(Contagem))
+
+# Criar o gráfico
+ggplot(crimes_por_descendencia, aes(x = reorder(Vict.Descent, Contagem), y = Contagem)) +
+  geom_bar(stat = "identity", fill = "#ff6f61", alpha = 0.8) +
+  labs(
+    title = "Distribuição de Crimes por Descendência da Vítima em Los Angeles (2020-Presente)",
+    x = "Descendência da Vítima",
+    y = "Número de Crimes",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  coord_flip() +
+  theme_minimal()
+```
+
+## Uma análise mais detalhada da base de dados e suas limitações.
+
+Realizarei uma análise sobre o estado atual da base de dados e suas ausências. exemplificando o gráfico abaixo que demonstra as falhas na inserção dos dados da vítima e o distrito que falhou em realizar a notificação.
+
+```{r}
+# Substituir "" por NA nas colunas de texto e considerar idade 0 como NA
+dados_vitima_incompleta <- dados %>%
+  mutate(
+    Vict.Age = ifelse(Vict.Age == 0, NA, Vict.Age),  # Considera idade 0 como NA
+    Vict.Sex = na_if(Vict.Sex, ""),
+    Vict.Descent = na_if(Vict.Descent, "")
+  ) %>%
+  group_by(AREA.NAME) %>%
+  summarise(
+    Total_Faltantes = sum(is.na(Vict.Age) | is.na(Vict.Sex) | is.na(Vict.Descent)),  # Registros com pelo menos 1 info faltando
+    Total_Registros = n(),
+    Proporcao_Faltantes = Total_Faltantes / Total_Registros
+  )
+
+# Gráfico de barras
+ggplot(dados_vitima_incompleta, aes(x = reorder(AREA.NAME, -Proporcao_Faltantes), y = Proporcao_Faltantes, fill = Proporcao_Faltantes)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "blue", high = "red") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Proporção de Crimes sem Informação sobre a Vítima por Área",
+    x = "Área",
+    y = "Proporção de Dados Ausentes (%)",
+    fill = "Proporção"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
+
+Sendo assim vale a pena verificar o sexo da vítima, um dos dados mais importantes.
+
+```{r}
+# Contar registros com sexo da vítima ausente ("" ou NA) por área
+dados_nulos_sexo <- dados %>%
+  mutate(Vict.Sex = na_if(Vict.Sex, "")) %>%  # Converte "" para NA
+  group_by(AREA.NAME) %>%
+  summarise(
+    Total_Faltantes = sum(is.na(Vict.Sex)),  # Total de valores ausentes
+    Total_Registros = n(),
+    Proporcao_Faltantes = Total_Faltantes / Total_Registros
+  )
+
+# Gráfico de barras
+ggplot(dados_nulos_sexo, aes(x = reorder(AREA.NAME, -Proporcao_Faltantes), y = Proporcao_Faltantes, fill = Proporcao_Faltantes)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "blue", high = "red") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Proporção de Registros sem Informação sobre o Sexo da Vítima por Área",
+    x = "Área",
+    y = "Proporção de Dados Ausentes (%)",
+    fill = "Proporção"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+Qual o estado atual da investigação dos caso
+
+```{r}
+# Contar a quantidade de casos por status
+dados_status <- dados %>%
+  group_by(Status.Desc) %>%
+  summarise(Quantidade = n()) %>%
+  arrange(desc(Quantidade))
+
+# Gráfico de barras mostrando a distribuição dos status dos casos
+ggplot(dados_status, aes(x = reorder(Status.Desc, -Quantidade), y = Quantidade, fill = Quantidade)) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = "blue", high = "red") +
+  labs(
+    title = "Distribuição dos Estados dos Casos de Crime em Los Angeles (2020-Presente)",
+    x = "Estado do Caso",
+    y = "Número de Crimes",
+    fill = "Quantidade"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+Demonstra para cada área policial, em que estado está a investigação, na tentativa de investigar o gargalo
+
+```{r}
+# Contar casos por status e área
+dados_status_area <- dados %>%
+  group_by(AREA.NAME, Status.Desc) %>%
+  summarise(Quantidade = n()) %>%
+  ungroup()
+
+# Heatmap de status por área
+ggplot(dados_status_area, aes(x = AREA.NAME, y = Status.Desc, fill = Quantidade)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "red") +
+  labs(
+    title = "Status dos Casos de Crime por Área em Los Angeles (2020-Presente)",
+    x = "Área",
+    y = "Estado do Caso",
+    fill = "Número de Casos"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+Como muitas falhas foram identificadas vale a pena saber se essas falhas refletem algo em sua data
+
+```{r}
+# Garantir que a coluna DATE.OCC esteja em formato de data e extrair o ano
+dados_com_ano <- dados %>%
+  mutate(Ano = year(as.Date(DATE.OCC, format = "%m/%d/%Y"))) %>%
+  mutate(
+    # Considerar dados faltantes nas principais colunas
+    Vict.Age = na_if(Vict.Age, 0),  # Considerando 0 como valor faltante na idade
+    Vict.Sex = na_if(Vict.Sex, ""),
+    Vict.Descent = na_if(Vict.Descent, ""),
+    Vict.Age = na_if(Vict.Age, NA)  # Garantir que NA seja tratado corretamente
+  ) %>%
+  group_by(Ano) %>%
+  summarise(
+    # Contar quantos registros faltam pelo menos um dado
+    Registros_Faltantes = sum(is.na(Vict.Age) | is.na(Vict.Sex) | is.na(Vict.Descent)),
+    Total_Registros = n(),
+    Proporcao_Faltantes = Registros_Faltantes / Total_Registros
+  )
+
+# Gráfico de linhas mostrando a proporção de dados faltantes ao longo dos anos
+ggplot(dados_com_ano, aes(x = Ano, y = Proporcao_Faltantes, group = 1)) +
+  geom_line(color = "blue") +
+  geom_point(color = "red") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Proporção de Casos com Dados Faltantes por Ano",
+    x = "Ano",
+    y = "Proporção de Casos com Dados Faltantes",
+    caption = "Fonte: Los Angeles Police Department (LAPD)"
+  ) +
+  theme_minimal()
+
+```
+
+# Conclusão
+
+A análise dos dados de crimes em Los Angeles, coletados entre 2020 e o presente, forneceu insights valiosos sobre os padrões de criminalidade na cidade. A partir de diversas técnicas de análise exploratória, conseguimos identificar tendências temporais, padrões geográficos e a distribuição de diferentes tipos de crimes.
+
+### Distribuição de Idades das Vítimas: 
+
+A idade das vítimas variou significativamente, com uma concentração maior de crimes envolvendo adultos jovens. A média e mediana das idades indicaram que as vítimas mais frequentes estavam entre 20 e 40 anos, sugerindo que esses grupos etários são mais suscetíveis a determinados tipos de crimes.
+
+### Tendência Temporal: 
+
+Observamos um aumento no número de crimes ao longo do período analisado, com picos em determinados meses. Isso pode indicar fatores sazonais ou mudanças nas condições sociais e econômicas que influenciam a criminalidade. A análise temporal é fundamental para que os órgãos de segurança pública possam antecipar e reagir a esses picos.
+
+### Piora na catalogação de casos:
+
+Nos últimos anos ficou evidente o quanto o número de falhas na notificação de casos cresceu, além de ocorrer um surto de novos casos ao fim de 2024, provavelmente decorrido de um gargalo de casos acumulados.
+
+### Distribuição dos Crimes por Hora e Dia: 
+
+A análise das ocorrências ao longo do dia e da semana mostrou que certos períodos, como a noite e os finais de semana, apresentam uma maior incidência de crimes. Isso sugere que os horários e dias específicos podem ser críticos para o planejamento de operações de segurança pública.

@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/1276590/8853753814524281a85c6fa6eba000c2
+bundleId: https://api.rpubs.com/api/v1/document/1276590/8853753814524281a85c6fa6eba000c2
+url: http://rpubs.com/Vinicius_Bezerra/1276590/edit
+version: 1
