@@ -1,0 +1,129 @@
+---
+title: "Prova Final"
+author: "Vinícius Pessoa"
+date: "28/02/2025"
+output: 
+  html_document:
+    theme: darkly  # Escolha um tema (outras opções: journal, flatly, etc.)
+    highlight: tango  # Estilo de destaque de código
+    toc: true         # Adiciona uma tabela de conteúdo
+    toc_float: true   # Tabela de conteúdo flutuante
+---
+
+# Prova Final {.tabset}
+
+## Bibliotecas
+
+```{r}
+library(ggplot2)
+library(reshape2)
+library(HSAUR3)
+library(ggplot2)
+```
+
+```{r}
+setwd("C:/Users/Pichau/Desktop/Faculdade/Projects/Repositorio_Academico_Multidisciplinar/Computacao_Dados/Prova Final")
+```
+
+
+## VADeaths
+
+```{r}
+
+data("VADeaths")
+
+VADeaths_df <- as.data.frame(VADeaths)
+VADeaths_df$Age <- rownames(VADeaths_df)  
+
+VADeaths_long <- melt(VADeaths_df, id.vars = "Age", variable.name = "Group", value.name = "Deaths")
+
+ggplot(VADeaths_long, aes(x = Age, y = Deaths, fill = Group)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Taxa de Mortalidade por Idade e Grupo",
+       x = "Faixa Etária",
+       y = "Taxa de Mortalidade (por 1000)",
+       fill = "Grupo") +
+  scale_fill_manual(values = c("Rural Male" = "blue", "Rural Female" = "red", 
+                               "Urban Male" = "green", "Urban Female" = "yellow")) +
+  theme_minimal()
+
+```
+
+## ClassificaçãoDoença
+
+```{r}
+
+estagios <- c("moderado", "leve", "leve", "severo", "leve", "moderado", "moderado", 
+              "moderado", "leve", "leve", "severo", "leve", "moderado", "moderado", 
+              "leve", "severo", "moderado", "moderado", "moderado", "leve")
+
+frequencia <- table(estagios)
+
+porcentagem <- round(100 * frequencia / sum(frequencia), 1)
+
+cores <- c("leve" = "green", "moderado" = "blue", "severo" = "red")
+
+pie(frequencia, 
+    labels = paste(porcentagem, "%"),
+    col = cores[names(frequencia)],
+    main = "Classificação da Doença em Pacientes")
+
+legend("topright", 
+       legend = names(frequencia), 
+       fill = cores[names(frequencia)], 
+       title = "Estágios da Doença")
+
+```
+
+## Teorema
+
+```{r}
+
+
+flu <- read.csv("flu.csv")
+idades <- flu$age
+
+
+ggplot(data.frame(idades), aes(x = idades)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "lightblue", color = "black") +
+  geom_density(color = "red", linewidth = 1) +
+  labs(title = "Distribuição das Idades das Mortes (População)",
+       x = "Idade",
+       y = "Densidade") +
+  theme_minimal()
+
+
+set.seed(123)  
+n_amostras <- 200
+tamanho_amostra <- 35
+medias_amostrais <- replicate(n_amostras, mean(sample(idades, tamanho_amostra, replace = TRUE)))
+
+ggplot(data.frame(medias_amostrais), aes(x = medias_amostrais)) +
+  geom_histogram(aes(y = ..density..), bins = 30, fill = "lightgreen", color = "black") +
+  geom_density(color = "blue", linewidth = 1) +
+  labs(title = "Distribuição das Médias Amostrais (n = 35)",
+       x = "Média Amostral",
+       y = "Densidade") +
+  theme_minimal()
+```
+
+## Questão 06
+
+```{r}
+load("bdims.RData")
+
+alturas_mulheres <- bdims$hgt[bdims$sex == 0]
+
+media <- mean(alturas_mulheres)
+desvio_padrao <- sd(alturas_mulheres)
+n <- length(alturas_mulheres)
+
+z <- qnorm(1 - (1 - 0.985) / 2)
+
+erro_padrao <- desvio_padrao / sqrt(n)
+
+limite_inferior <- media - z * erro_padrao
+limite_superior <- media + z * erro_padrao
+
+sprintf("[%.2f-%.2f]", limite_inferior, limite_superior)
+```
