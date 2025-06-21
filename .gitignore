@@ -1,4 +1,4 @@
-
+# Redes Neurais
 Redes Neurais/Mini Projeto 03 Redes neurais/DL_Mestrado/
 Redes Neurais/miniprojeto02/DL_Mestrado/
 Redes Neurais/Mini Projeto 03 Redes neurais/data/
@@ -8,17 +8,25 @@ Redes Neurais/Projetao/simpson_testset
 Redes Neurais/Projetao/simpsons_dataset
 Redes Neurais/Projetao/testset_simpsons
 Redes Neurais/Projetao/redes/vgg16.pth
+
+# Processamento de Imagens
 Processamento_imagens/aula04/data
 Processamento_imagens/mini_prog_1va/processamento_imagens
-Processamento_imagens/projeto bolado/Data
-Processamento_imagens/projeto bolado/historico_treinamento_cnn.json
-Processamento_imagens/projeto bolado/historico_treinamento_mlp.json
-Processamento_imagens/projeto bolado/modelo_cnn.h5
-Processamento_imagens/projeto bolado/modelo_mlp.h5
+Processamento_imagens/preprocessamento_cnn_mlp/Data
+Processamento_imagens/preprocessamento_cnn_mlp/historico_treinamento_cnn.json
+Processamento_imagens/preprocessamento_cnn_mlp/historico_treinamento_mlp.json
+Processamento_imagens/preprocessamento_cnn_mlp/modelo_cnn.h5
+Processamento_imagens/preprocessamento_cnn_mlp/modelo_mlp.h5
+
+# Extensão
 Extencao/Post_01/venv
+
+# Computação de Dados
 Computacao_Dados/Projeto_FINAL/Crime_Data_from_2020_to_Present.csv
 Computacao_Dados/Prova Final/.RData
 Computacao_Dados/Prova Final/bdims.RData
 Computacao_Dados/Prova Final/flu.csv
+
+# Pasta Pessoal
 pasta_pessoal/paginaPessoal/.env
 pasta_pessoal/paginaPessoal/serviceAccountKey.json
