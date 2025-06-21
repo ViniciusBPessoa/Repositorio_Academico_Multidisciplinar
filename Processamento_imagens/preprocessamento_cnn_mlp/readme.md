@@ -4,7 +4,7 @@
 
 Este projeto compara o impacto de diferentes técnicas de pré-processamento de imagens na classificação de tumores cerebrais em ressonâncias magnéticas. Utilizando redes neurais convolucionais (CNN) e redes multicamadas (MLP), o estudo analisa o desempenho de cada modelo frente a múltiplas combinações de filtros, limiarizações e ajustes de contraste. Desenvolvido como parte de um projeto de extensão da UFRPE, o trabalho busca contribuir para soluções mais precisas no apoio ao diagnóstico por imagem.
 
-## 📚 Base de Dados
+## Base de Dados
 
 * **Fonte**: [Kaggle - Brain Tumor with Bounding Boxes](https://www.kaggle.com/datasets/ahmedsorour1/mri-for-brain-tumor-with-bounding-boxes)
 * **Total de imagens**: 5.249 MRI rotuladas
@@ -24,7 +24,7 @@ Este projeto compara o impacto de diferentes técnicas de pré-processamento de 
 | Sem Tumor  | 711         | 100       |
 | Pituitária | 1.424       | 136       |
 
-## 🛠️ Técnicas de Pré-processamento Avaliadas
+## Técnicas de Pré-processamento Avaliadas
 
 1. **Equalização de Histograma**
 2. **Ajuste de Brilho**
@@ -37,13 +37,13 @@ Este projeto compara o impacto de diferentes técnicas de pré-processamento de 
 
 ### Combinações de Técnicas
 
-
+```mermaid
 graph LR
     A[Entrada - MRI 512x512] --> B[Redimensionamento 224x224]
     B --> C[Pré-processamento]
-    C --> D[Extração de Características (Hu, LBP)]
+    C --> D[Extração de Características: Hu e LBP]
     D --> E[Classificação com CNN ou MLP]
-
+```
 
 Exemplos de combinações:
 
@@ -82,7 +82,6 @@ O estudo demonstrou que a CNN é mais robusta para tarefas complexas como a clas
 ## 👨‍💻 Autor
 
 * **Vinícius Pessoa** — Ciência da Computação - UFRPE
-* Projeto de Extensão — Departamento de Computação
 
 ## 📫 Contato
 
@@ -93,5 +92,13 @@ Para dúvidas, colaborações ou interesse em expandir o projeto:
 ---
 
 *"A combinação de processamento de imagem e redes neurais é o caminho para diagnósticos mais rápidos e precisos em ambientes clínicos assistidos por IA."*
+
+---
+
+📄 **Acesse o relatório completo em PDF**:
+👉 [Clique aqui para abrir no Overleaf](https://www.overleaf.com/read/pghchwjvdxbn#3057fb)
+
+📁 **Repositório**:
+🔗 [GitHub - Repositorio\_Academico\_Multidisciplinar/Processamento\_imagens/preprocessamento\_cnn\_mlp](https://github.com/ViniciusBPessoa/Repositorio_Academico_Multidisciplinar/tree/main/Processamento_imagens/preprocessamento_cnn_mlp)
 
 ---
