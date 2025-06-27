@@ -6,8 +6,6 @@ Este projeto realiza uma análise exploratória e visual de crimes ocorridos na 
 
 ## 📁 Estrutura do Projeto
 
-```
-
 Projeto\_FINAL/
 │
 ├── CodigoPrncipal.R                      # Código R complementar com análises/visualizações
@@ -63,5 +61,3 @@ Investigar **tendências temporais, padrões geográficos e fatores associados**
 - **Vinícius Pessoa Bezerra**  
   Estudante de Ciência da Computação  
   Projeto acadêmico para disciplina da graduação
-
----
