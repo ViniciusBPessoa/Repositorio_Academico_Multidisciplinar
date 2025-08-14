@@ -74,5 +74,3 @@ def encontrar_indices_triângulos_do_vértice(índice_vértice, lista_triângulo
         if índice_vértice in triângulo:
             índices_triângulos_do_vértice.append(i)
     return índices_triângulos_do_vértice
-
-

@@ -8,7 +8,7 @@ def criar_usuario():
     data = {
         "nome": "Ana Paula",
         "email": "ana.paula@email.com",
-        "telefone": "5581987654321",
+        "telefone": "987654321",
         "password": "senhaInicial2025"
     }
     response = requests.post(f"{BASE_URL}/usuario/", json=data)
@@ -43,7 +43,6 @@ def obter_user_id_por_email(token, email):
     print("\n🔍 Buscando ID do usuário por e-mail...")
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.get(f"{BASE_URL}/usuario/", headers=headers)
-    print(response)
     if response.status_code == 200:
         for usuario in response.json():
             if usuario.get("email") == email:
@@ -64,10 +63,10 @@ def trocar_senha(token, user_id):
     print("Status:", response.status_code)
     print("Resposta:", response.json())
 
-if __name__ == "__main__":
+if __name__ == "_main_":
     criar_usuario()                         # 1. Cria usuário
     token = obter_token()                  # 2. Gera token
     login_com_jwt()                        # 3. Exibe login JWT
     user_id = obter_user_id_por_email(token, "ana.paula@email.com")  # 4. Busca ID
     if user_id:
-        trocar_senha(token, user_id)       # 5. Troca senha
+        trocar_senha(token, user_id)       # 5. Troca senha
