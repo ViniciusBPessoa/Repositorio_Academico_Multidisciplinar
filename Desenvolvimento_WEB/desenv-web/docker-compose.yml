@@ -1,0 +1,93 @@
+services:
+  nats:
+    profiles:
+      - local
+      - infra
+    image: nats
+    restart: unless-stopped
+    command: --trace
+    ports:
+      - 4222:4222
+      - 6222:6222
+      - 8222:8222
+    volumes:
+      - ./data/nats:/data
+
+  db:
+    profiles:
+      - local
+      - infra
+    build:
+      context: ./deploy/database
+      dockerfile: Dockerfile
+    command: [ 'postgres', '-c', 'log_statement=all', '-c', 'log_destination=stderr']
+    hostname: db
+    restart: unless-stopped
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER env var is missing on .env file}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB env var is missing on .env file}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD env var is missing on .env file}
+
+  users:
+    profiles:
+      - local
+    build:
+      context: .
+      dockerfile: ./deploy/service/Dockerfile
+      args:
+        SERVICE: users
+    hostname: users
+    restart: unless-stopped
+    environment:
+      APP_NAME: 'USERS MICROSERVICE'
+      APP_ENV: ${USERS_APP_ENV:-local}
+      APP_DATABASE_HOST: 'db'
+      APP_DATABASE_MIGRATION_HOST: ${POSTGRES_DB:?POSTGRES_DB env var is missing on .env file}
+      APP_DATABASE_PORT: 5432
+      APP_DATABASE_SCHEMA: public
+      APP_DATABASE_DATABASE: ${POSTGRES_DB:?POSTGRES_DB env var is missing on .env file}
+      APP_DATABASE_USERNAME: ${POSTGRES_USER:?POSTGRES_USER env var is missing on .env file}
+      APP_DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD env var is missing on .env file}
+      APP_DATABASE_SSL: 'false'
+      APP_DATABASE_MIGRATION_TABLE: 'sequelize_meta_users'
+      APP_DATABASE_SEEDERS_TABLE: 'sequelize_seeders_users'
+      APP_DATABASE_LOG: ${USERS_APP_DATABASE_LOG:-true}
+      APP_NATS_SERVERS: 'nats:4222'
+      APP_NATS_DELIVER_GROUP: 'users'
+      APP_NATS_QUEUE_GROUP: 'users'
+      APP_NATS_DELIVER_TO: 'users'
+      APP_NATS_SUBJECT: 'users.>'
+      APP_LOG_LEVEL: ${USERS_APP_LOG_LEVEL:-debug}
+    depends_on:
+      - nats
+      - db
+
+  api-users:
+    profiles:
+      - local
+    build:
+      context: .
+      dockerfile: ./deploy/api/Dockerfile
+      args:
+        SERVICE: api-users
+    ports:
+      - '3000:3000'
+    hostname: api-users
+    restart: unless-stopped
+    environment:
+      APP_NAME: 'API GATEWAY USERS'
+      APP_ENV: ${API_USERS_APP_ENV:-local}
+      APP_JWT_TOKEN: ${API_USERS_APP_JWT_TOKEN:?API_USERS_APP_JWT_TOKEN env var is missing on .env file}
+      APP_NATS_SERVERS: 'nats:4222'
+      APP_NATS_DELIVER_GROUP: 'api-users'
+      APP_NATS_QUEUE_GROUP: 'api-users'
+      APP_NATS_DELIVER_TO: 'api-users'
+      APP_NATS_SUBJECT: 'api-users.>'
+      APP_PORT: 3000
+      APP_JWT_EXPIRES_S: 300
+    depends_on:
+      - nats
+      - users
+      - db
