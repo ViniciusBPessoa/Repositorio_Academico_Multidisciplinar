@@ -8,8 +8,8 @@ def produto_escalar(vetor1, vetor2): # produto escalar
     return sum(x * y for x, y in zip(vetor1, vetor2))
 
 
-def projecao_ortogonal(N, V): # calcula projeção
-    produto_escalar_nv = produto_escalar(N, V)
+def projecao_ortogonal(V, N): # calcula projeção
+    produto_escalar_nv = produto_escalar(V, N)
     produto_escalar_nn = produto_escalar(N, N)
     
     proj_n_v = [(produto_escalar_nv / produto_escalar_nn) * x for x in N]
@@ -20,7 +20,7 @@ def novo_v(V, proj_N_V): # gera um novo V
     return [x - y for x, y in zip(V, proj_N_V)]
 
 def ortogonalizador(N, V): # ortogonalizador
-    proj_N_V = projecao_ortogonal(N, V)
+    proj_N_V = projecao_ortogonal(V, N)
     return novo_v(V, proj_N_V)
 
 def produto_vetorial(vetor1, vetor2): # produto vetorial
@@ -67,3 +67,10 @@ def encontrar_lista_por_Y(lista, valor_procurado): # devolve o indice do da lita
         if sublista[1] == valor_procurado:
             return lista.index(sublista)
     return None  # Retorna None se o valor não for encontrado
+
+def encontrar_indices_triângulos_do_vértice(índice_vértice, lista_triângulos):
+    índices_triângulos_do_vértice = []
+    for i, triângulo in enumerate(lista_triângulos):
+        if índice_vértice in triângulo:
+            índices_triângulos_do_vértice.append(i)
+    return índices_triângulos_do_vértice
