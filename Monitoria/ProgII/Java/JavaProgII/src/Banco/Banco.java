@@ -65,7 +65,7 @@ public class Banco {
             return false;
         }
         
-        if (contaOrigem.transferir(contaDestino, valor, descricao)) {
+        if (contaOrigem.transferirConta(contaDestino, valor, descricao)) {
             System.out.println("Transferência de R$ " + valor + " realizada de " + 
                              numeroContaOrigem + " para " + numeroContaDestino);
             return true;

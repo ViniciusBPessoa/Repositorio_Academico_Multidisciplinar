@@ -41,7 +41,7 @@ public class ContaBancaria {
         }
     }
     
-    public boolean transferir(ContaBancaria contaDestino, double valor, String descricao) {
+    public boolean transferirConta(ContaBancaria contaDestino, double valor, String descricao) {
         if (this.debitarConta(valor, "Transferência para " + contaDestino.getTitular() + ": " + descricao)) {
             contaDestino.creditarConta(valor, "Transferência de " + this.titular + ": " + descricao);
             return true;
