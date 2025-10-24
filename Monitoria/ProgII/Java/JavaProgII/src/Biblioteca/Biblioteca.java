@@ -22,19 +22,29 @@ public class Biblioteca {
     }
     
     public boolean emprestarItem(String titulo) {
+        boolean saida = false;
+        boolean encontrouItem = false;
+        
         for (Livro item : acervo) {
             if (item.getTitulo().equals(titulo)) {
+                encontrouItem = true;
                 if (!item.isEmprestado()) {
                     item.emprestar();
-                    return true;
+                    saida = true;
+                    System.out.println("Item '" + titulo + "' emprestado com sucesso!");
+                    break;
                 } else {
                     System.out.println("Item '" + titulo + "' já está emprestado!");
-                    return false;
+                    break;
                 }
             }
         }
-        System.out.println("Item '" + titulo + "' não encontrado no acervo!");
-        return false;
+        
+        if (!encontrouItem) {
+            System.out.println("Item '" + titulo + "' não encontrado no acervo!");
+        }
+        
+        return saida;
     }
     
     public boolean devolverItem(String titulo) {

@@ -4,6 +4,7 @@ public class Livro {
     protected String titulo;
     protected String autor;
     protected int ano;
+    protected String Editora;
     protected boolean emprestado;
     
     public Livro(String titulo, String autor, int ano) {
@@ -11,6 +12,14 @@ public class Livro {
         this.autor = autor;
         this.ano = ano;
         this.emprestado = false;
+        this.Editora = "lIVRO";
+    }
+    public Livro(String titulo, String autor, int ano, String Editora) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.ano = ano;
+        this.emprestado = false;
+        this.Editora = Editora;
     }
     
     public void emprestar() {
