@@ -4,5 +4,5 @@
 /**
  * 
  */
-module TestProject {
+module SudokuProject {
 }
