@@ -79,6 +79,25 @@ Exemplos de combinações:
 
 O estudo demonstrou que a CNN é mais robusta para tarefas complexas como a classificação de tumores em imagens de ressonância. No entanto, a MLP pode ser uma alternativa viável em contextos com recursos computacionais limitados, principalmente se combinada com extração eficiente de características como Momentos de Hu e LBP.
 
+## 📁 Arquivos
+
+| Arquivo | Conteúdo |
+| ------- | -------- |
+| `principal_algoritimo.ipynb` | pré-processamento, extração de características e treino da CNN e da MLP para cada combinação de técnicas |
+| `Analise_result.ipynb` | análise e comparação dos resultados |
+| `historicos/` | histórico de treino (`.npy`) e matriz de confusão (`.png`) de cada combinação e modelo |
+
+## ▶️ Como Executar
+
+1. Baixe a base no [Kaggle](https://www.kaggle.com/datasets/ahmedsorour1/mri-for-brain-tumor-with-bounding-boxes) e organize em `Data/Train` e `Data/Val` (uma pasta por classe, com as imagens em `<classe>/images`). As imagens não estão versionadas neste repositório.
+2. Instale as dependências:
+
+   ```bash
+   pip install tensorflow opencv-python scikit-image scikit-learn numpy matplotlib seaborn jupyter
+   ```
+
+3. Ajuste o caminho da base no `principal_algoritimo.ipynb` e execute as células em ordem.
+
 ## 👨‍💻 Autor
 
 * **Vinícius Pessoa** — Ciência da Computação - UFRPE

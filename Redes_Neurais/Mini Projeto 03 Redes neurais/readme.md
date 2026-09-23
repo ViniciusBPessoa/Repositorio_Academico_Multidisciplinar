@@ -9,15 +9,17 @@ Este projeto consiste na implementação de uma Multi-Layer Perceptron (MLP) uti
 - matplotlib
 
 ## Instruções de Uso
-1. Baixar o conjunto de dados MNIST.
+1. Baixar o conjunto de dados MNIST (o notebook baixa automaticamente pelo `torchvision`).
 2. Importar as bibliotecas necessárias.
 3. Definir a classe MLP.
 4. Treinar o modelo.
 5. Avaliar o desempenho do modelo.
 
 ## Arquivos do Projeto
-- `mlp_mnist.py`: Código fonte do modelo MLP.
-- `README.md`: Este arquivo.
+- `miniprojeto03.ipynb`: notebook com o código do modelo MLP, o treino e a avaliação.
+- `modelo_salvo.pth`: pesos do modelo final treinado.
+- `data/MNIST/`: base MNIST baixada pelo `torchvision`.
+- `readme.md`: este arquivo.
 
 ## Parâmetros do Modelo Base
 - Tamanho de Entrada: 784 (28x28 pixels)

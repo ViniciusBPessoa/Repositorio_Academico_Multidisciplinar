@@ -1,61 +1,59 @@
-# Visualizador 3D Interativo com Pygame
+# Visualizador 3D Interativo com Pygame: Projeto 2ª VA
 
-Este é um programa em Python que utiliza o Pygame para visualização interativa de objetos 3D. Ele permite carregar modelos de malha 3D, exibir pontos, linhas e conteúdo preenchido, além de oferecer funcionalidades como recarregar malhas, alternar entre modos de exibição e abrir links externos.
+Evolução do [Projeto 1ª VA](../Projeto%201º%20VA/), feita para a disciplina de **Computação Gráfica**. O visualizador carrega malhas 3D, projeta com a câmera virtual e agora também calcula a **iluminação** e usa **Z-buffer** para esconder as superfícies que ficam atrás de outras. Todo o pipeline é implementado à mão, e o Pygame serve só para desenhar na tela.
 
 ## Funcionalidades Principais
 
-- Carregar e exibir modelos de malha 3D.
-- Interagir com a visualização usando teclas do teclado.
-- Alternar entre diferentes modos de exibição (pontos, linhas e conteúdo preenchido).
-- Recarregar a malha atual.
-- Abrir links externos para referências adicionais.
+- Carregar e exibir modelos de malha 3D (`.byu`).
+- Projeção em perspectiva a partir de uma câmera definida em arquivo.
+- Cálculo das normais de cada triângulo e de cada vértice.
+- Iluminação (modelo de Phong) com os parâmetros lidos de `arquivos/iliminacoes/iluminacao01.txt`: intensidade da luz ambiente (Iamb) e coeficiente ambiente (Ka), cor (Il) e posição (P) da fonte de luz, coeficiente difuso (Kd), cor difusa do objeto (O), coeficiente especular (Ks) e expoente de rugosidade (η).
+- Z-buffer para remover as superfícies ocultas. Ele começa ligado e pode ser desligado com a tecla `Z`.
+- Alternar entre os modos de exibição (pontos, linhas e malha preenchida).
 
-## Requisitos
+## Controles do Teclado
 
-- Python 3.x
-- Pygame
+| Tecla | Ação |
+|---|---|
+| `1`, `2`, `3` | alternam o modo de exibição (pontos, pontos e linhas, malha preenchida); só têm efeito com o Z-buffer desligado |
+| `Z` | liga e desliga o Z-buffer |
+| `R` | recarrega a malha atual |
+| `T` | pede no console o nome de outra malha para carregar |
+| `Espaço` | mostra no console todos os valores da malha |
+| `8` | mostra no console as normais dos vértices |
+| `7` | abre o vídeo de referência no navegador |
+| `Esc` | fecha o programa |
+
+## Estrutura
+
+```
+Projeto 2º VA/
+├── Main.py                           # loop principal e controles
+└── arquivos/
+    ├── gerenciador_arquivos.py       # malha, câmera, iluminação, projeção, rasterização e Z-buffer
+    ├── auxiliares/                   # operações de matrizes e vetores
+    ├── cameras/camera01.txt          # parâmetros da câmera
+    ├── iliminacoes/iluminacao01.txt  # parâmetros de iluminação
+    └── modelos/                      # malhas .byu
+```
 
 ## Como Usar
 
-Certifique-se de ter o Python 3.x instalado. Instale o Pygame utilizando:
+Instale o Pygame:
 
 ```bash
 pip install pygame
 ```
 
-Execute o programa com o Python:
+Execute o programa a partir da pasta do projeto:
 
 ```bash
-Main.py
+python Main.py
 ```
 
-### Controles do Teclado
-
-- **R**: Recarregar a malha atual.
-- **T**: Digitar o nome do arquivo da malha para carregar um novo.
-- **Espaço**: Exibir todos os valores da malha.
-- **Esc**: Fechar o programa.
-- **1, 2, 3**: Alternar entre diferentes modos de exibição.
-- **7**: Abrir um link específico.
-
-## Observações
-
-Certifique-se de ter as malhas 3D disponíveis na pasta `arquivos` para carregá-las corretamente.
-
-## Contribuições
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir um PR.
-
-## Recursos Adicionais
-
-- [Documentação do Pygame](https://www.pygame.org/docs/)
-- [Tutorial de Introdução ao Pygame](https://www.pygame.org/wiki/tutorials)
+As malhas precisam estar em `arquivos/modelos` para serem carregadas.
 
 ## Referências
 
-- [Tutorial de Desenvolvimento de Jogos com Pygame](https://www.youtube.com/watch?v=VBJvDgBZEi4)
-
----
-
-Este programa foi desenvolvido como parte de um projeto educacional para visualização interativa de modelos de malha 3D utilizando Pygame.
-```
+- [Documentação do Pygame](https://www.pygame.org/docs/)
+- [Vídeo de referência (tecla 7)](https://www.youtube.com/watch?v=VBJvDgBZEi4)
