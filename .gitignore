@@ -31,3 +31,8 @@ Computacao_Dados/Prova Final/flu.csv
 # Pasta Pessoal
 pasta_pessoal/paginaPessoal/.env
 pasta_pessoal/paginaPessoal/serviceAccountKey.json
+
+# Python / editor
+__pycache__/
+*.pyc
+.vscode/
